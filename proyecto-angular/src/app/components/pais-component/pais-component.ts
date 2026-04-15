@@ -52,6 +52,9 @@ export class PaisComponent {
   // Criterio de orden activo.
   ordenSeleccionado = signal<string>('nombre-asc');
 
+  // Indica si mostrar solo favoritos o todos los paises.
+  soloFavoritos = signal<boolean>(false);
+
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
     const regiones = new Set(
@@ -68,12 +71,15 @@ export class PaisComponent {
     const termino = this.terminoBusqueda().trim().toLowerCase();
     const region = this.regionSeleccionada();
     const orden = this.ordenSeleccionado();
+    const mostrarSoloFavoritos = this.soloFavoritos();
 
     const filtrados = this.paises().filter((pais) => {
       const coincideNombre = !termino || pais.name.common.toLowerCase().includes(termino);
       const coincideRegion = region === 'Todas' || pais.region === region;
+      const esFavorito = this.favoritosService.esFavorito(pais.name.common);
+      const coincideFavoritos = !mostrarSoloFavoritos || esFavorito;
 
-      return coincideNombre && coincideRegion;
+      return coincideNombre && coincideRegion && coincideFavoritos;
     });
 
     return [...filtrados].sort((a, b) => {
@@ -109,6 +115,11 @@ export class PaisComponent {
   // Actualiza el criterio de orden activo.
   actualizarOrden(valor: string): void {
     this.ordenSeleccionado.set(valor);
+  }
+
+  // Alterna entre mostrar todos los paises o solo favoritos.
+  toggleSoloFavoritos(): void {
+    this.soloFavoritos.set(!this.soloFavoritos());
   }
 
   // Devuelve la primera capital o un texto alternativo si no existe.

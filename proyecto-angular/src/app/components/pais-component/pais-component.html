@@ -43,6 +43,21 @@
                 }
             </select>
         </div>
+
+        <div class="field-group">
+            <label>Favoritos</label>
+            <button
+                class="toggle-favorites"
+                [class.toggle-favorites--active]="soloFavoritos()"
+                (click)="toggleSoloFavoritos()"
+                [attr.aria-label]="soloFavoritos() ? 'Ver todos los países' : 'Ver solo favoritos'">
+                @if(soloFavoritos()){
+                    ★ Solo Favoritos
+                } @else {
+                    ☆ Todos los Países
+                }
+            </button>
+        </div>
     </section>
 
     @if(cargando()){
