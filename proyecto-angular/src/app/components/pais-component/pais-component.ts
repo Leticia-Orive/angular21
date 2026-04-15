@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { PaisesService } from '../../services/paises-service';
 import { Pais } from '../../models/pais-interface';
 
@@ -30,9 +30,30 @@ export class PaisComponent {
   // Estado para mostrar mensajes cuando la peticion falla.
   error = signal<string | null>(null);
 
+  // Texto que escribe el usuario para filtrar paises por nombre.
+  terminoBusqueda = signal<string>('');
+
+  // Lista derivada que aplica el filtro en tiempo real por nombre comun.
+  paisesFiltrados = computed(() => {
+    const termino = this.terminoBusqueda().trim().toLowerCase();
+
+    if (!termino) {
+      return this.paises();
+    }
+
+    return this.paises().filter((pais) =>
+      pais.name.common.toLowerCase().includes(termino)
+    );
+  });
+
   // Al crear el componente, dispara la primera carga de datos.
   constructor(){
     this.cargarPaises();
+  }
+
+  // Actualiza el texto de busqueda cuando el usuario escribe en el input.
+  actualizarBusqueda(valor: string): void {
+    this.terminoBusqueda.set(valor);
   }
 
   // Obtiene los paises, los ordena alfabeticamente y actualiza el estado.

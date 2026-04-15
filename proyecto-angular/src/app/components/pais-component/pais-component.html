@@ -11,6 +11,17 @@
 -->
 <h1>Listado de paises</h1>
 
+<!-- Input para filtrar paises por nombre en tiempo real. -->
+<div class="search-box">
+    <label for="buscador-paises">Buscar pais:</label>
+    <input
+        id="buscador-paises"
+        type="text"
+        [value]="terminoBusqueda()"
+        (input)="actualizarBusqueda($any($event.target).value)"
+        placeholder="Escribe un pais...">
+</div>
+
 <!-- Se muestra solo mientras la API sigue cargando datos. -->
 @if(cargando()){
     <p>Cargando paises...</p>
@@ -28,7 +39,7 @@
 @if(!cargando() && !error()){
     <div class="grid">
         <!-- Recorre la lista de paises y crea una tarjeta para cada uno. -->
-        @for(pais of paises(); track pais.name.common){
+        @for(pais of paisesFiltrados(); track pais.name.common){
             <div class="card">
                 <!-- Bandera del pais. -->
                 <img
@@ -52,4 +63,8 @@
             </div>
         }
     </div>
+
+    @if(paisesFiltrados().length === 0){
+        <p class="sin-resultados">No se encontraron paises con ese nombre.</p>
+    }
 }
