@@ -1,0 +1,55 @@
+
+<!--
+  Esta plantilla sirve para mostrar en pantalla la lista de paises
+  obtenida desde el componente `PaisComponent`.
+
+  Que hace:
+  - Muestra un titulo principal.
+  - Enseña un mensaje mientras los datos estan cargando.
+  - Enseña un mensaje si ocurre un error.
+  - Recorre la lista de paises y pinta una tarjeta por cada uno.
+-->
+<h1>Listado de paises</h1>
+
+<!-- Se muestra solo mientras la API sigue cargando datos. -->
+@if(cargando()){
+    <p>Cargando paises...</p>
+}
+
+<!-- Se muestra si hubo un error al obtener los paises. -->
+@if(error()){
+    <p class="error">{{error()}}</p>
+}
+
+<!--
+  Este bloque solo se pinta cuando la carga ha terminado
+  y no existe ningun error.
+-->
+@if(!cargando() && !error()){
+    <div class="grid">
+        <!-- Recorre la lista de paises y crea una tarjeta para cada uno. -->
+        @for(pais of paises(); track pais.name.common){
+            <div class="card">
+                <!-- Bandera del pais. -->
+                <img
+                    [src]="pais.flags.png"
+                    [alt]="pais.name.common">
+
+                <!-- Nombre comun del pais. -->
+                <h3>{{pais.name.common}}</h3>
+
+                <!-- Capital del pais. -->
+                <p>
+                    <strong>Capital:</strong>
+                    {{pais.capital}}
+                </p>
+
+                <!-- Numero de habitantes del pais. -->
+                <p>
+                    <strong>Población:</strong>
+                    {{pais.population}}
+                </p>
+            </div>
+        }
+    </div>
+}

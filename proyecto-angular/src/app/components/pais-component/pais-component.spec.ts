@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { PaisComponent } from './pais-component';
+
+describe('PaisComponent', () => {
+  let component: PaisComponent;
+  let fixture: ComponentFixture<PaisComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PaisComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(PaisComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
