@@ -51,15 +51,45 @@
                     </div>
                     <div>
                         <dt>Moneda</dt>
-                        <dd>{{obtenerMonedas(pais)}}</dd>
+                        <dd>
+                            @if(obtenerMonedas(pais).length > 0){
+                                <div class="chip-list">
+                                    @for(moneda of obtenerMonedas(pais); track moneda){
+                                        <span class="chip">{{moneda}}</span>
+                                    }
+                                </div>
+                            } @else {
+                                Sin monedas disponibles
+                            }
+                        </dd>
                     </div>
                     <div>
                         <dt>Idioma(s)</dt>
-                        <dd>{{obtenerIdiomas(pais)}}</dd>
+                        <dd>
+                            @if(obtenerIdiomas(pais).length > 0){
+                                <div class="chip-list">
+                                    @for(idioma of obtenerIdiomas(pais); track idioma){
+                                        <span class="chip">{{idioma}}</span>
+                                    }
+                                </div>
+                            } @else {
+                                Sin idiomas disponibles
+                            }
+                        </dd>
                     </div>
                     <div>
                         <dt>Zona horaria</dt>
-                        <dd>{{obtenerZonaHorariaPrincipal(pais)}}</dd>
+                        <dd>
+                            @if(obtenerZonasHorarias(pais).length > 0){
+                                <div class="chip-list">
+                                    @for(zona of obtenerZonasHorarias(pais); track zona){
+                                        <span class="chip">{{zona}}</span>
+                                    }
+                                </div>
+                            } @else {
+                                Sin zona horaria
+                            }
+                        </dd>
                     </div>
                 </dl>
             </div>

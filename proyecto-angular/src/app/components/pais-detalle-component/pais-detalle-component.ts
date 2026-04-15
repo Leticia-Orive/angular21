@@ -42,29 +42,33 @@ export class PaisDetalleComponent {
     return typeof area === 'number' ? `${area.toLocaleString('es-ES')} km2` : 'Sin dato de area';
   }
 
-  obtenerIdiomas(pais: Pais): string {
+  obtenerIdiomas(pais: Pais): string[] {
     if (!pais.languages) {
-      return 'Sin idiomas disponibles';
+      return [];
     }
 
     const idiomas = Object.values(pais.languages);
-    return idiomas.length > 0 ? idiomas.join(', ') : 'Sin idiomas disponibles';
+    return idiomas;
   }
 
-  obtenerMonedas(pais: Pais): string {
+  obtenerMonedas(pais: Pais): string[] {
     if (!pais.currencies) {
-      return 'Sin monedas disponibles';
+      return [];
     }
 
     const monedas = Object.values(pais.currencies).map((moneda) => {
       return moneda.symbol ? `${moneda.name} (${moneda.symbol})` : moneda.name;
     });
 
-    return monedas.length > 0 ? monedas.join(', ') : 'Sin monedas disponibles';
+    return monedas;
   }
 
   obtenerZonaHorariaPrincipal(pais: Pais): string {
     return pais.timezones?.[0] || 'Sin zona horaria';
+  }
+
+  obtenerZonasHorarias(pais: Pais): string[] {
+    return pais.timezones ?? [];
   }
 
   obtenerBandera(pais: Pais): string | null {

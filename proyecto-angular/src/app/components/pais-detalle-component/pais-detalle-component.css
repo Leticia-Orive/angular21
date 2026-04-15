@@ -143,6 +143,23 @@
   font-weight: 700;
 }
 
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.12);
+  color: #0a5a54;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
 .spinner {
   width: 42px;
   height: 42px;
