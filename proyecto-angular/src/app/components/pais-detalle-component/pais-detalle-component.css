@@ -103,6 +103,37 @@
   padding: 24px;
 }
 
+.fav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 2px solid #d18b00;
+  border-radius: 12px;
+  background: transparent;
+  color: #8b5b00;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.fav-btn:hover {
+  background: #ffefcf;
+  transform: translateY(-1px);
+}
+
+.fav-btn--active {
+  background: #d18b00;
+  border-color: #d18b00;
+  color: #fff;
+}
+
+.fav-btn:focus-visible {
+  outline: 3px solid rgba(209, 139, 0, 0.28);
+  outline-offset: 2px;
+}
+
 .region-badge {
   display: inline-flex;
   margin-bottom: 10px;

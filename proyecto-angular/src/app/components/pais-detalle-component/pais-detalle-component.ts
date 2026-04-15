@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Pais } from '../../models/pais-interface';
+import { FavoritosService } from '../../services/favoritos.service';
 import { PaisesService } from '../../services/paises-service';
 
 @Component({
@@ -13,6 +14,7 @@ import { PaisesService } from '../../services/paises-service';
 export class PaisDetalleComponent {
   private route = inject(ActivatedRoute);
   private paisService = inject(PaisesService);
+  readonly favoritosService = inject(FavoritosService);
 
   pais = signal<Pais | null>(null);
   cargando = signal<boolean>(true);
@@ -73,6 +75,14 @@ export class PaisDetalleComponent {
 
   obtenerBandera(pais: Pais): string | null {
     return pais.flags?.png || pais.flags?.svg || null;
+  }
+
+  esFavorito(nombrePais: string): boolean {
+    return this.favoritosService.esFavorito(nombrePais);
+  }
+
+  toggleFavorito(nombrePais: string): void {
+    this.favoritosService.toggleFavorito(nombrePais);
   }
 
   private cargarDetalle(): void {

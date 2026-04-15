@@ -31,6 +31,13 @@
             <div class="detail-content">
                 <span class="region-badge">{{obtenerRegion(pais)}}</span>
                 <h1>{{pais.name.common}}</h1>
+                <button
+                    class="fav-btn"
+                    [class.fav-btn--active]="esFavorito(pais.name.common)"
+                    (click)="toggleFavorito(pais.name.common)"
+                    [attr.aria-label]="esFavorito(pais.name.common) ? 'Quitar de favoritos' : 'Añadir a favoritos'">
+                    {{ esFavorito(pais.name.common) ? '★ Favorito' : '☆ Favorito' }}
+                </button>
 
                 <dl class="detail-data">
                     <div>
