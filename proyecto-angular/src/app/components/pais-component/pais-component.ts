@@ -97,6 +97,9 @@ export class PaisComponent {
     });
   });
 
+  // Cantidad total de paises marcados como favoritos.
+  totalFavoritos = computed(() => this.favoritosService.lista().length);
+
   // Al crear el componente, dispara la primera carga de datos.
   constructor(){
     this.cargarPaises();

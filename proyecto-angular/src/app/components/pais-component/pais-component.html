@@ -79,6 +79,7 @@
 
     @if(!cargando() && !error()){
         <section class="results-header">
+            <p class="results-count results-count--favorites">Favoritos: {{totalFavoritos()}}</p>
             <p class="results-count">Resultados: {{paisesFiltrados().length}}</p>
         </section>
 
