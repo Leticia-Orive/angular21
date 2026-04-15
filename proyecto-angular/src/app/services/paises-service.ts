@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { Pais } from '../models/pais-interface';
 
 /**
@@ -31,12 +31,21 @@ import { Pais } from '../models/pais-interface';
 export class PaisesService {
   private apiUrl = 'https://restcountries.com/v3.1/all?fields=name,region,capital,population,flags';
 
+  // Guarda en memoria la respuesta para reutilizarla sin repetir la llamada HTTP.
+  private paisesCache$?: Observable<Pais[]>;
+
   constructor(private http: HttpClient){}
 
   /**
-   * Realiza la peticion GET y devuelve un Observable con un array de paises.
+   * Realiza la peticion GET una sola vez y reutiliza el resultado en siguientes llamadas.
    */
   obtenerPaises(): Observable<Pais[]>{
-    return this.http.get<Pais[]>(this.apiUrl);
+    if (!this.paisesCache$) {
+      this.paisesCache$ = this.http.get<Pais[]>(this.apiUrl).pipe(
+        shareReplay(1)
+      );
+    }
+
+    return this.paisesCache$;
   }
 }
