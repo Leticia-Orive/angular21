@@ -33,17 +33,31 @@ export class PaisComponent {
   // Texto que escribe el usuario para filtrar paises por nombre.
   terminoBusqueda = signal<string>('');
 
-  // Lista derivada que aplica el filtro en tiempo real por nombre comun.
+  // Region seleccionada por el usuario para filtrar resultados.
+  regionSeleccionada = signal<string>('Todas');
+
+  // Regiones disponibles construidas dinamicamente a partir de los datos.
+  regionesDisponibles = computed(() => {
+    const regiones = new Set(
+      this.paises()
+        .map((pais) => pais.region)
+        .filter((region) => !!region)
+    );
+
+    return ['Todas', ...Array.from(regiones).sort((a, b) => a.localeCompare(b))];
+  });
+
+  // Lista derivada que aplica filtro por nombre y por region en tiempo real.
   paisesFiltrados = computed(() => {
     const termino = this.terminoBusqueda().trim().toLowerCase();
+    const region = this.regionSeleccionada();
 
-    if (!termino) {
-      return this.paises();
-    }
+    return this.paises().filter((pais) => {
+      const coincideNombre = !termino || pais.name.common.toLowerCase().includes(termino);
+      const coincideRegion = region === 'Todas' || pais.region === region;
 
-    return this.paises().filter((pais) =>
-      pais.name.common.toLowerCase().includes(termino)
-    );
+      return coincideNombre && coincideRegion;
+    });
   });
 
   // Al crear el componente, dispara la primera carga de datos.
@@ -54,6 +68,11 @@ export class PaisComponent {
   // Actualiza el texto de busqueda cuando el usuario escribe en el input.
   actualizarBusqueda(valor: string): void {
     this.terminoBusqueda.set(valor);
+  }
+
+  // Actualiza la region activa del filtro.
+  actualizarRegion(valor: string): void {
+    this.regionSeleccionada.set(valor);
   }
 
   // Obtiene los paises, los ordena alfabeticamente y actualiza el estado.

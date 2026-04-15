@@ -20,6 +20,16 @@
         [value]="terminoBusqueda()"
         (input)="actualizarBusqueda($any($event.target).value)"
         placeholder="Escribe un pais...">
+
+    <label for="filtro-region">Filtrar por region:</label>
+    <select
+        id="filtro-region"
+        [value]="regionSeleccionada()"
+        (change)="actualizarRegion($any($event.target).value)">
+        @for(region of regionesDisponibles(); track region){
+            <option [value]="region">{{region}}</option>
+        }
+    </select>
 </div>
 
 <!-- Se muestra solo mientras la API sigue cargando datos. -->
@@ -65,6 +75,6 @@
     </div>
 
     @if(paisesFiltrados().length === 0){
-        <p class="sin-resultados">No se encontraron paises con ese nombre.</p>
+        <p class="sin-resultados">No se encontraron paises con los filtros actuales.</p>
     }
 }

@@ -12,6 +12,14 @@
 	border-radius: 8px;
 }
 
+.search-box select {
+	max-width: 320px;
+	padding: 0.55rem 0.7rem;
+	border: 1px solid #cfd4dc;
+	border-radius: 8px;
+	background: #fff;
+}
+
 .grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
