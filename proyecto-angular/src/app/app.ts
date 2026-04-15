@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { PaisComponent } from './components/pais-component/pais-component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [PaisComponent],
-  template: `<app-pais-component/>` ,
+  imports: [RouterOutlet],
+  template: `<router-outlet />`,
   styleUrl: './app.css'
 })
 export class App {

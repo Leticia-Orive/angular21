@@ -262,6 +262,31 @@
 	word-break: break-word;
 }
 
+.detail-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 16px;
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: #142033;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.detail-link:hover {
+	transform: translateY(-1px);
+	opacity: 0.92;
+}
+
+.detail-link:focus-visible {
+	outline: 3px solid rgba(15, 118, 110, 0.25);
+	outline-offset: 2px;
+}
+
+
 @keyframes spin {
 	to {
 		transform: rotate(360deg);

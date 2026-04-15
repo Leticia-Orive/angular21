@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';
 import { Pais } from '../../models/pais-interface';
 
@@ -12,7 +13,7 @@ import { Pais } from '../../models/pais-interface';
  */
 @Component({
   selector: 'app-pais-component',
-  imports: [],
+  imports: [RouterLink],
   standalone: true,
   templateUrl: './pais-component.html',
   styleUrl: './pais-component.css',

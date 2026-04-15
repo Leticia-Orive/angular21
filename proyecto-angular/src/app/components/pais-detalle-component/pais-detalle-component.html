@@ -1,0 +1,48 @@
+<section class="detail-shell">
+    <a class="back-link" routerLink="/">Volver al listado</a>
+
+    @if(cargando()){
+        <div class="detail-panel detail-panel--loading">
+            <div class="spinner"></div>
+            <div>
+                <h1>Cargando detalle</h1>
+                <p>Estamos preparando la ficha del país seleccionado.</p>
+            </div>
+        </div>
+    }
+
+    @if(error()){
+        <div class="detail-panel detail-panel--error">
+            <h1>No disponible</h1>
+            <p>{{error()}}</p>
+        </div>
+    }
+
+    @if(!cargando() && pais(); as pais){
+        <article class="detail-card">
+            <div class="detail-flag-frame">
+                @if(obtenerBandera(pais); as bandera){
+                    <img [src]="bandera" [alt]="pais.name.common">
+                } @else {
+                    <div class="flag-placeholder">Sin bandera</div>
+                }
+            </div>
+
+            <div class="detail-content">
+                <span class="region-badge">{{obtenerRegion(pais)}}</span>
+                <h1>{{pais.name.common}}</h1>
+
+                <dl class="detail-data">
+                    <div>
+                        <dt>Capital</dt>
+                        <dd>{{obtenerCapital(pais)}}</dd>
+                    </div>
+                    <div>
+                        <dt>Población</dt>
+                        <dd>{{formatearPoblacion(pais.population)}}</dd>
+                    </div>
+                </dl>
+            </div>
+        </article>
+    }
+</section>

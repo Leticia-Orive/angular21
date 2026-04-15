@@ -95,6 +95,10 @@
                                     <dd>{{formatearPoblacion(pais.population)}}</dd>
                                 </div>
                             </dl>
+
+                            <a class="detail-link" [routerLink]="['/pais', pais.name.common]">
+                                Ver detalle
+                            </a>
                         </div>
                     </article>
                 }
