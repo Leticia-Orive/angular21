@@ -29,7 +29,7 @@ import { Pais } from '../models/pais-interface';
   providedIn: 'root',
 })
 export class PaisesService {
-  private apiUrl = 'https://restcountries.com/v3.1/all?fields=name,region,capital,population,flags';
+  private apiUrl = 'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags';
 
   // Guarda en memoria la respuesta para reutilizarla sin repetir la llamada HTTP.
   private paisesCache$?: Observable<Pais[]>;

@@ -22,8 +22,16 @@ export interface Pais {
         common : string;
     }
     region?: string;
+    subregion?: string;
     capital?: string[];
     population: number;
+    area?: number;
+    timezones?: string[];
+    languages?: Record<string, string>;
+    currencies?: Record<string, {
+        name: string;
+        symbol?: string;
+    }>;
     flags?: {
         png?: string;
         svg?: string

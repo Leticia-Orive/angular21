@@ -43,7 +43,7 @@ describe('PaisesService', () => {
     });
 
     const req = httpMock.expectOne(
-      'https://restcountries.com/v3.1/all?fields=name,region,capital,population,flags'
+      'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags'
     );
 
     expect(req.request.method).toBe('GET');
@@ -61,7 +61,7 @@ describe('PaisesService', () => {
     });
 
     const req = httpMock.expectOne(
-      'https://restcountries.com/v3.1/all?fields=name,region,capital,population,flags'
+      'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags'
     );
     req.flush(mockPaises);
 
@@ -70,7 +70,7 @@ describe('PaisesService', () => {
     });
 
     httpMock.expectNone(
-      'https://restcountries.com/v3.1/all?fields=name,region,capital,population,flags'
+      'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags'
     );
 
     expect(primerResultado).toEqual(mockPaises);

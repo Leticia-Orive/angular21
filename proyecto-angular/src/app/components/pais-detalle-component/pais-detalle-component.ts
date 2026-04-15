@@ -30,8 +30,41 @@ export class PaisDetalleComponent {
     return pais.region || 'Sin region';
   }
 
+  obtenerSubregion(pais: Pais): string {
+    return pais.subregion || 'Sin subregion';
+  }
+
   formatearPoblacion(poblacion: number): string {
     return poblacion.toLocaleString('es-ES');
+  }
+
+  formatearArea(area?: number): string {
+    return typeof area === 'number' ? `${area.toLocaleString('es-ES')} km2` : 'Sin dato de area';
+  }
+
+  obtenerIdiomas(pais: Pais): string {
+    if (!pais.languages) {
+      return 'Sin idiomas disponibles';
+    }
+
+    const idiomas = Object.values(pais.languages);
+    return idiomas.length > 0 ? idiomas.join(', ') : 'Sin idiomas disponibles';
+  }
+
+  obtenerMonedas(pais: Pais): string {
+    if (!pais.currencies) {
+      return 'Sin monedas disponibles';
+    }
+
+    const monedas = Object.values(pais.currencies).map((moneda) => {
+      return moneda.symbol ? `${moneda.name} (${moneda.symbol})` : moneda.name;
+    });
+
+    return monedas.length > 0 ? monedas.join(', ') : 'Sin monedas disponibles';
+  }
+
+  obtenerZonaHorariaPrincipal(pais: Pais): string {
+    return pais.timezones?.[0] || 'Sin zona horaria';
   }
 
   obtenerBandera(pais: Pais): string | null {
@@ -49,7 +82,7 @@ export class PaisDetalleComponent {
 
     this.paisService.obtenerPaises().subscribe({
       next: (data) => {
-        const paisEncontrado = data.find((pais) => pais.name.common === nombre);
+        const paisEncontrado = data.find((pais) => pais.name.common.toLowerCase() === nombre.toLowerCase());
 
         if (!paisEncontrado) {
           this.error.set('No se encontro el pais solicitado.');
