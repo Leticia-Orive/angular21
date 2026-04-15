@@ -52,7 +52,7 @@ export class PaisComponent {
     const regiones = new Set(
       this.paises()
         .map((pais) => pais.region)
-        .filter((region) => !!region)
+        .filter((region): region is string => !!region)
     );
 
     return ['Todas', ...Array.from(regiones).sort((a, b) => a.localeCompare(b))];
@@ -104,6 +104,26 @@ export class PaisComponent {
   // Actualiza el criterio de orden activo.
   actualizarOrden(valor: string): void {
     this.ordenSeleccionado.set(valor);
+  }
+
+  // Devuelve la primera capital o un texto alternativo si no existe.
+  obtenerCapital(pais: Pais): string {
+    return pais.capital?.[0] || 'Sin capital disponible';
+  }
+
+  // Devuelve la region o un texto alternativo si no llega informada.
+  obtenerRegion(pais: Pais): string {
+    return pais.region || 'Sin region';
+  }
+
+  // Formatea la poblacion con separadores para mejorar la lectura.
+  formatearPoblacion(poblacion: number): string {
+    return poblacion.toLocaleString('es-ES');
+  }
+
+  // Obtiene una URL de bandera utilizable o null cuando no existe imagen.
+  obtenerBandera(pais: Pais): string | null {
+    return pais.flags?.png || pais.flags?.svg || null;
   }
 
   // Obtiene los paises y actualiza el estado.

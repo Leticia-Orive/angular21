@@ -72,23 +72,27 @@
                 @for(pais of paisesFiltrados(); track pais.name.common){
                     <article class="card">
                         <div class="flag-frame">
-                            <img
-                                [src]="pais.flags.png"
-                                [alt]="pais.name.common">
+                            @if(obtenerBandera(pais); as bandera){
+                                <img
+                                    [src]="bandera"
+                                    [alt]="pais.name.common">
+                            } @else {
+                                <div class="flag-placeholder">Sin bandera</div>
+                            }
                         </div>
 
                         <div class="card-content">
-                            <span class="region-badge">{{pais.region}}</span>
+                            <span class="region-badge">{{obtenerRegion(pais)}}</span>
                             <h3>{{pais.name.common}}</h3>
 
                             <dl class="country-data">
                                 <div>
                                     <dt>Capital</dt>
-                                    <dd>{{pais.capital}}</dd>
+                                    <dd>{{obtenerCapital(pais)}}</dd>
                                 </div>
                                 <div>
                                     <dt>Población</dt>
-                                    <dd>{{pais.population}}</dd>
+                                    <dd>{{formatearPoblacion(pais.population)}}</dd>
                                 </div>
                             </dl>
                         </div>

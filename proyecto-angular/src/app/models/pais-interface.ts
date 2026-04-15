@@ -21,11 +21,11 @@ export interface Pais {
     name: {
         common : string;
     }
-    region: string;
-    capital: string[];
+    region?: string;
+    capital?: string[];
     population: number;
-    flags: {
-        png : string;
-        svg: string
+    flags?: {
+        png?: string;
+        svg?: string
     }
 }
