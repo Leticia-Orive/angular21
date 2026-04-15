@@ -18,6 +18,14 @@ import { Pais } from '../../models/pais-interface';
   styleUrl: './pais-component.css',
 })
 export class PaisComponent {
+  // Opciones de orden disponibles para el selector.
+  readonly opcionesOrden = [
+    { valor: 'nombre-asc', etiqueta: 'Nombre (A-Z)' },
+    { valor: 'nombre-desc', etiqueta: 'Nombre (Z-A)' },
+    { valor: 'poblacion-asc', etiqueta: 'Poblacion (menor a mayor)' },
+    { valor: 'poblacion-desc', etiqueta: 'Poblacion (mayor a menor)' },
+  ] as const;
+
   // Inyeccion del servicio que realiza la llamada HTTP a la API de paises.
   private paisService = inject(PaisesService);
 
@@ -36,6 +44,9 @@ export class PaisComponent {
   // Region seleccionada por el usuario para filtrar resultados.
   regionSeleccionada = signal<string>('Todas');
 
+  // Criterio de orden activo.
+  ordenSeleccionado = signal<string>('nombre-asc');
+
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
     const regiones = new Set(
@@ -47,16 +58,31 @@ export class PaisComponent {
     return ['Todas', ...Array.from(regiones).sort((a, b) => a.localeCompare(b))];
   });
 
-  // Lista derivada que aplica filtro por nombre y por region en tiempo real.
+  // Lista derivada que aplica filtros y orden en tiempo real.
   paisesFiltrados = computed(() => {
     const termino = this.terminoBusqueda().trim().toLowerCase();
     const region = this.regionSeleccionada();
+    const orden = this.ordenSeleccionado();
 
-    return this.paises().filter((pais) => {
+    const filtrados = this.paises().filter((pais) => {
       const coincideNombre = !termino || pais.name.common.toLowerCase().includes(termino);
       const coincideRegion = region === 'Todas' || pais.region === region;
 
       return coincideNombre && coincideRegion;
+    });
+
+    return [...filtrados].sort((a, b) => {
+      switch (orden) {
+        case 'nombre-desc':
+          return b.name.common.localeCompare(a.name.common);
+        case 'poblacion-asc':
+          return a.population - b.population;
+        case 'poblacion-desc':
+          return b.population - a.population;
+        case 'nombre-asc':
+        default:
+          return a.name.common.localeCompare(b.name.common);
+      }
     });
   });
 
@@ -75,15 +101,16 @@ export class PaisComponent {
     this.regionSeleccionada.set(valor);
   }
 
-  // Obtiene los paises, los ordena alfabeticamente y actualiza el estado.
+  // Actualiza el criterio de orden activo.
+  actualizarOrden(valor: string): void {
+    this.ordenSeleccionado.set(valor);
+  }
+
+  // Obtiene los paises y actualiza el estado.
   cargarPaises(): void{
     this.paisService.obtenerPaises().subscribe({
       next: (data)=>{
-        const paisesOrdenados = data.sort((a,b)=>
-          a.name.common.localeCompare(b.name.common)
-        );
-
-        this.paises.set(paisesOrdenados);
+        this.paises.set(data);
         this.cargando.set(false);
       },
       error: (err)=>{
