@@ -1,90 +1,105 @@
 
-<!--
-  Esta plantilla sirve para mostrar en pantalla la lista de paises
-  obtenida desde el componente `PaisComponent`.
+<section class="page-shell">
+    <header class="hero">
+        <p class="eyebrow">Explorador de países</p>
+        <h1>Consulta países de forma rápida</h1>
+        <p class="hero-copy">
+            Filtra por nombre, región y criterio de ordenación para explorar los datos
+            obtenidos desde la API.
+        </p>
+    </header>
 
-  Que hace:
-  - Muestra un titulo principal.
-  - Enseña un mensaje mientras los datos estan cargando.
-  - Enseña un mensaje si ocurre un error.
-  - Recorre la lista de paises y pinta una tarjeta por cada uno.
--->
-<h1>Listado de paises</h1>
+    <section class="controls-panel">
+        <div class="field-group field-group--wide">
+            <label for="buscador-paises">Buscar país</label>
+            <input
+                id="buscador-paises"
+                type="text"
+                [value]="terminoBusqueda()"
+                (input)="actualizarBusqueda($any($event.target).value)"
+                placeholder="Escribe un país...">
+        </div>
 
-<!-- Input para filtrar paises por nombre en tiempo real. -->
-<div class="search-box">
-    <label for="buscador-paises">Buscar pais:</label>
-    <input
-        id="buscador-paises"
-        type="text"
-        [value]="terminoBusqueda()"
-        (input)="actualizarBusqueda($any($event.target).value)"
-        placeholder="Escribe un pais...">
+        <div class="field-group">
+            <label for="filtro-region">Región</label>
+            <select
+                id="filtro-region"
+                [value]="regionSeleccionada()"
+                (change)="actualizarRegion($any($event.target).value)">
+                @for(region of regionesDisponibles(); track region){
+                    <option [value]="region">{{region}}</option>
+                }
+            </select>
+        </div>
 
-    <label for="filtro-region">Filtrar por region:</label>
-    <select
-        id="filtro-region"
-        [value]="regionSeleccionada()"
-        (change)="actualizarRegion($any($event.target).value)">
-        @for(region of regionesDisponibles(); track region){
-            <option [value]="region">{{region}}</option>
-        }
-    </select>
+        <div class="field-group">
+            <label for="orden-paises">Ordenar por</label>
+            <select
+                id="orden-paises"
+                [value]="ordenSeleccionado()"
+                (change)="actualizarOrden($any($event.target).value)">
+                @for(opcion of opcionesOrden; track opcion.valor){
+                    <option [value]="opcion.valor">{{opcion.etiqueta}}</option>
+                }
+            </select>
+        </div>
+    </section>
 
-    <label for="orden-paises">Ordenar por:</label>
-    <select
-        id="orden-paises"
-        [value]="ordenSeleccionado()"
-        (change)="actualizarOrden($any($event.target).value)">
-        @for(opcion of opcionesOrden; track opcion.valor){
-            <option [value]="opcion.valor">{{opcion.etiqueta}}</option>
-        }
-    </select>
-</div>
+    @if(cargando()){
+        <div class="status-panel status-panel--loading">
+            <div class="spinner"></div>
+            <div>
+                <h2>Cargando países</h2>
+                <p>Estamos consultando la API y preparando la información.</p>
+            </div>
+        </div>
+    }
 
-<!-- Se muestra solo mientras la API sigue cargando datos. -->
-@if(cargando()){
-    <p>Cargando paises...</p>
-}
+    @if(error()){
+        <div class="status-panel status-panel--error">
+            <h2>No se pudo cargar la información</h2>
+            <p>{{error()}}</p>
+        </div>
+    }
 
-<!-- Se muestra si hubo un error al obtener los paises. -->
-@if(error()){
-    <p class="error">{{error()}}</p>
-}
+    @if(!cargando() && !error()){
+        <section class="results-header">
+            <p class="results-count">Resultados: {{paisesFiltrados().length}}</p>
+        </section>
 
-<!--
-  Este bloque solo se pinta cuando la carga ha terminado
-  y no existe ningun error.
--->
-@if(!cargando() && !error()){
-    <div class="grid">
-        <!-- Recorre la lista de paises y crea una tarjeta para cada uno. -->
-        @for(pais of paisesFiltrados(); track pais.name.common){
-            <div class="card">
-                <!-- Bandera del pais. -->
-                <img
-                    [src]="pais.flags.png"
-                    [alt]="pais.name.common">
+        @if(paisesFiltrados().length > 0){
+            <div class="grid">
+                @for(pais of paisesFiltrados(); track pais.name.common){
+                    <article class="card">
+                        <div class="flag-frame">
+                            <img
+                                [src]="pais.flags.png"
+                                [alt]="pais.name.common">
+                        </div>
 
-                <!-- Nombre comun del pais. -->
-                <h3>{{pais.name.common}}</h3>
+                        <div class="card-content">
+                            <span class="region-badge">{{pais.region}}</span>
+                            <h3>{{pais.name.common}}</h3>
 
-                <!-- Capital del pais. -->
-                <p>
-                    <strong>Capital:</strong>
-                    {{pais.capital}}
-                </p>
-
-                <!-- Numero de habitantes del pais. -->
-                <p>
-                    <strong>Población:</strong>
-                    {{pais.population}}
-                </p>
+                            <dl class="country-data">
+                                <div>
+                                    <dt>Capital</dt>
+                                    <dd>{{pais.capital}}</dd>
+                                </div>
+                                <div>
+                                    <dt>Población</dt>
+                                    <dd>{{pais.population}}</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </article>
+                }
+            </div>
+        } @else {
+            <div class="status-panel status-panel--empty">
+                <h2>Sin resultados</h2>
+                <p>No se encontraron países con los filtros actuales.</p>
             </div>
         }
-    </div>
-
-    @if(paisesFiltrados().length === 0){
-        <p class="sin-resultados">No se encontraron paises con los filtros actuales.</p>
     }
-}
+</section>
