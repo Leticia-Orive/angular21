@@ -99,6 +99,14 @@
                             <a class="detail-link" [routerLink]="['/pais', pais.name.common]">
                                 Ver detalle
                             </a>
+
+                            <button
+                                class="fav-btn"
+                                [class.fav-btn--active]="favoritosService.esFavorito(pais.name.common)"
+                                (click)="favoritosService.toggleFavorito(pais.name.common)"
+                                [attr.aria-label]="favoritosService.esFavorito(pais.name.common) ? 'Quitar de favoritos' : 'Añadir a favoritos'">
+                                {{ favoritosService.esFavorito(pais.name.common) ? '★ Favorito' : '☆ Favorito' }}
+                            </button>
                         </div>
                     </article>
                 }

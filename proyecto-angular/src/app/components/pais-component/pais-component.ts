@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';
+import { FavoritosService } from '../../services/favoritos.service';
 import { Pais } from '../../models/pais-interface';
 
 /**
@@ -29,6 +30,9 @@ export class PaisComponent {
 
   // Inyeccion del servicio que realiza la llamada HTTP a la API de paises.
   private paisService = inject(PaisesService);
+
+  // Servicio para marcar y persistir paises favoritos en localStorage.
+  readonly favoritosService = inject(FavoritosService);
 
   // Estado reactivo con la lista de paises recibidos.
   paises = signal<Pais[]>([]);
