@@ -322,4 +322,56 @@ describe('PaisComponent', () => {
     expect(preventDefault).not.toHaveBeenCalled();
     expect(component.ayudaAtajosAbierta()).toBe(false);
   });
+
+  it('should mark help as seen when closed', () => {
+    localStorage.removeItem('paises-ayuda-atajos-vista');
+    component.ayudaAtajosAbierta.set(true);
+
+    component.cerrarAyudaAtajos();
+
+    expect(component.ayudaAtajosAbierta()).toBe(false);
+    expect(component.ayudaFueVista()).toBe(true);
+  });
+});
+
+describe('PaisComponent – first visit', () => {
+  beforeEach(async () => {
+    localStorage.removeItem('paises-ayuda-atajos-vista');
+
+    await TestBed.configureTestingModule({
+      imports: [PaisComponent],
+      providers: [
+        provideRouter([]),
+        { provide: PaisesService, useValue: { obtenerPaises: vi.fn(() => of([])) } },
+      ],
+    }).compileComponents();
+  });
+
+  it('should open help panel automatically on first visit', async () => {
+    const fixture = TestBed.createComponent(PaisComponent);
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.ayudaAtajosAbierta()).toBe(true);
+  });
+});
+
+describe('PaisComponent – returning visit', () => {
+  beforeEach(async () => {
+    localStorage.setItem('paises-ayuda-atajos-vista', '1');
+
+    await TestBed.configureTestingModule({
+      imports: [PaisComponent],
+      providers: [
+        provideRouter([]),
+        { provide: PaisesService, useValue: { obtenerPaises: vi.fn(() => of([])) } },
+      ],
+    }).compileComponents();
+  });
+
+  it('should not open help panel when already seen', async () => {
+    const fixture = TestBed.createComponent(PaisComponent);
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.ayudaAtajosAbierta()).toBe(false);
+  });
 });

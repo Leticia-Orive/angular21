@@ -64,6 +64,8 @@ export class PaisComponent implements OnDestroy {
   // Controla la visibilidad del panel con ayuda de atajos.
   ayudaAtajosAbierta = signal<boolean>(false);
 
+  private static readonly AYUDA_VISTA_KEY = 'paises-ayuda-atajos-vista';
+
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
     const regiones = new Set(
@@ -150,6 +152,7 @@ export class PaisComponent implements OnDestroy {
     });
 
     this.cargarPaises();
+    this.mostrarAyudaPrimeraVezSiProcede();
   }
 
   ngOnDestroy(): void {
@@ -287,6 +290,15 @@ export class PaisComponent implements OnDestroy {
 
   cerrarAyudaAtajos(): void {
     this.ayudaAtajosAbierta.set(false);
+    this.marcarAyudaComoVista();
+  }
+
+  ayudaFueVista(): boolean {
+    try {
+      return localStorage.getItem(PaisComponent.AYUDA_VISTA_KEY) === '1';
+    } catch {
+      return true;
+    }
   }
 
   // Obtiene los paises y actualiza el estado.
@@ -367,6 +379,20 @@ export class PaisComponent implements OnDestroy {
     if (this.feedbackCopyTimeoutId !== undefined) {
       window.clearTimeout(this.feedbackCopyTimeoutId);
       this.feedbackCopyTimeoutId = undefined;
+    }
+  }
+
+  private mostrarAyudaPrimeraVezSiProcede(): void {
+    if (!this.ayudaFueVista()) {
+      this.ayudaAtajosAbierta.set(true);
+    }
+  }
+
+  private marcarAyudaComoVista(): void {
+    try {
+      localStorage.setItem(PaisComponent.AYUDA_VISTA_KEY, '1');
+    } catch {
+      // localStorage no disponible en SSR: se ignora silenciosamente.
     }
   }
 
