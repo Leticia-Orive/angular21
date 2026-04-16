@@ -19,87 +19,209 @@
     }
 
     @if(!cargando() && pais(); as pais){
-        <article class="detail-card">
-            <div class="detail-flag-frame">
-                @if(obtenerBandera(pais); as bandera){
-                    <img [src]="bandera" [alt]="pais.name.common">
-                } @else {
-                    <div class="flag-placeholder">Sin bandera</div>
-                }
+        <section class="compare-toolbar">
+            <div class="compare-field">
+                <label for="comparar-pais">Comparar con otro país</label>
+                <select
+                    id="comparar-pais"
+                    [value]="nombreComparacion()"
+                    (change)="seleccionarComparacion($any($event.target).value)">
+                    <option value="">Sin comparación</option>
+                    @for(opcion of opcionesComparacion(); track opcion.name.common){
+                        <option [value]="opcion.name.common">{{opcion.name.common}}</option>
+                    }
+                </select>
             </div>
 
-            <div class="detail-content">
-                <span class="region-badge">{{obtenerRegion(pais)}}</span>
-                <h1>{{pais.name.common}}</h1>
-                <button
-                    class="fav-btn"
-                    [class.fav-btn--active]="esFavorito(pais.name.common)"
-                    (click)="toggleFavorito(pais.name.common)"
-                    [attr.aria-label]="esFavorito(pais.name.common) ? 'Quitar de favoritos' : 'Añadir a favoritos'">
-                    {{ esFavorito(pais.name.common) ? '★ Favorito' : '☆ Favorito' }}
+            @if(paisComparado()){
+                <button class="secondary-btn" type="button" (click)="limpiarComparacion()">
+                    Quitar comparación
                 </button>
+            }
+        </section>
 
-                <dl class="detail-data">
-                    <div>
-                        <dt>Capital</dt>
-                        <dd>{{obtenerCapital(pais)}}</dd>
-                    </div>
-                    <div>
-                        <dt>Subregión</dt>
-                        <dd>{{obtenerSubregion(pais)}}</dd>
-                    </div>
-                    <div>
-                        <dt>Población</dt>
-                        <dd>{{formatearPoblacion(pais.population)}}</dd>
-                    </div>
-                    <div>
-                        <dt>Área</dt>
-                        <dd>{{formatearArea(pais.area)}}</dd>
-                    </div>
-                    <div>
-                        <dt>Moneda</dt>
-                        <dd>
-                            @if(obtenerMonedas(pais).length > 0){
-                                <div class="chip-list">
-                                    @for(moneda of obtenerMonedas(pais); track moneda){
-                                        <span class="chip">{{moneda}}</span>
-                                    }
-                                </div>
-                            } @else {
-                                Sin monedas disponibles
-                            }
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>Idioma(s)</dt>
-                        <dd>
-                            @if(obtenerIdiomas(pais).length > 0){
-                                <div class="chip-list">
-                                    @for(idioma of obtenerIdiomas(pais); track idioma){
-                                        <span class="chip">{{idioma}}</span>
-                                    }
-                                </div>
-                            } @else {
-                                Sin idiomas disponibles
-                            }
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>Zona horaria</dt>
-                        <dd>
-                            @if(obtenerZonasHorarias(pais).length > 0){
-                                <div class="chip-list">
-                                    @for(zona of obtenerZonasHorarias(pais); track zona){
-                                        <span class="chip">{{zona}}</span>
-                                    }
-                                </div>
-                            } @else {
-                                Sin zona horaria
-                            }
-                        </dd>
-                    </div>
-                </dl>
+        @if(errorComparacion()){
+            <div class="compare-error">
+                {{errorComparacion()}}
             </div>
-        </article>
+        }
+
+        <section class="comparison-grid" [class.comparison-grid--dual]="!!paisComparado()">
+            <article class="detail-card">
+                <div class="detail-card__header">
+                    <span class="detail-card__eyebrow">País base</span>
+                </div>
+
+                <div class="detail-flag-frame">
+                    @if(obtenerBandera(pais); as bandera){
+                        <img [src]="bandera" [alt]="pais.name.common">
+                    } @else {
+                        <div class="flag-placeholder">Sin bandera</div>
+                    }
+                </div>
+
+                <div class="detail-content">
+                    <span class="region-badge">{{obtenerRegion(pais)}}</span>
+                    <h1>{{pais.name.common}}</h1>
+                    <button
+                        class="fav-btn"
+                        [class.fav-btn--active]="esFavorito(pais.name.common)"
+                        (click)="toggleFavorito(pais.name.common)"
+                        [attr.aria-label]="esFavorito(pais.name.common) ? 'Quitar de favoritos' : 'Añadir a favoritos'">
+                        {{ esFavorito(pais.name.common) ? '★ Favorito' : '☆ Favorito' }}
+                    </button>
+
+                    <dl class="detail-data">
+                        <div>
+                            <dt>Capital</dt>
+                            <dd>{{obtenerCapital(pais)}}</dd>
+                        </div>
+                        <div>
+                            <dt>Subregión</dt>
+                            <dd>{{obtenerSubregion(pais)}}</dd>
+                        </div>
+                        <div>
+                            <dt>Población</dt>
+                            <dd>{{formatearPoblacion(pais.population)}}</dd>
+                        </div>
+                        <div>
+                            <dt>Área</dt>
+                            <dd>{{formatearArea(pais.area)}}</dd>
+                        </div>
+                        <div>
+                            <dt>Moneda</dt>
+                            <dd>
+                                @if(obtenerMonedas(pais).length > 0){
+                                    <div class="chip-list">
+                                        @for(moneda of obtenerMonedas(pais); track moneda){
+                                            <span class="chip">{{moneda}}</span>
+                                        }
+                                    </div>
+                                } @else {
+                                    Sin monedas disponibles
+                                }
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Idioma(s)</dt>
+                            <dd>
+                                @if(obtenerIdiomas(pais).length > 0){
+                                    <div class="chip-list">
+                                        @for(idioma of obtenerIdiomas(pais); track idioma){
+                                            <span class="chip">{{idioma}}</span>
+                                        }
+                                    </div>
+                                } @else {
+                                    Sin idiomas disponibles
+                                }
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Zona horaria</dt>
+                            <dd>
+                                @if(obtenerZonasHorarias(pais).length > 0){
+                                    <div class="chip-list">
+                                        @for(zona of obtenerZonasHorarias(pais); track zona){
+                                            <span class="chip">{{zona}}</span>
+                                        }
+                                    </div>
+                                } @else {
+                                    Sin zona horaria
+                                }
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </article>
+
+            @if(paisComparado(); as paisComparado){
+                <article class="detail-card detail-card--comparison">
+                    <div class="detail-card__header">
+                        <span class="detail-card__eyebrow">País comparado</span>
+                    </div>
+
+                    <div class="detail-flag-frame">
+                        @if(obtenerBandera(paisComparado); as bandera){
+                            <img [src]="bandera" [alt]="paisComparado.name.common">
+                        } @else {
+                            <div class="flag-placeholder">Sin bandera</div>
+                        }
+                    </div>
+
+                    <div class="detail-content">
+                        <span class="region-badge">{{obtenerRegion(paisComparado)}}</span>
+                        <h1>{{paisComparado.name.common}}</h1>
+                        <button
+                            class="fav-btn"
+                            [class.fav-btn--active]="esFavorito(paisComparado.name.common)"
+                            (click)="toggleFavorito(paisComparado.name.common)"
+                            [attr.aria-label]="esFavorito(paisComparado.name.common) ? 'Quitar de favoritos' : 'Añadir a favoritos'">
+                            {{ esFavorito(paisComparado.name.common) ? '★ Favorito' : '☆ Favorito' }}
+                        </button>
+
+                        <dl class="detail-data">
+                            <div>
+                                <dt>Capital</dt>
+                                <dd>{{obtenerCapital(paisComparado)}}</dd>
+                            </div>
+                            <div>
+                                <dt>Subregión</dt>
+                                <dd>{{obtenerSubregion(paisComparado)}}</dd>
+                            </div>
+                            <div>
+                                <dt>Población</dt>
+                                <dd>{{formatearPoblacion(paisComparado.population)}}</dd>
+                            </div>
+                            <div>
+                                <dt>Área</dt>
+                                <dd>{{formatearArea(paisComparado.area)}}</dd>
+                            </div>
+                            <div>
+                                <dt>Moneda</dt>
+                                <dd>
+                                    @if(obtenerMonedas(paisComparado).length > 0){
+                                        <div class="chip-list">
+                                            @for(moneda of obtenerMonedas(paisComparado); track moneda){
+                                                <span class="chip">{{moneda}}</span>
+                                            }
+                                        </div>
+                                    } @else {
+                                        Sin monedas disponibles
+                                    }
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Idioma(s)</dt>
+                                <dd>
+                                    @if(obtenerIdiomas(paisComparado).length > 0){
+                                        <div class="chip-list">
+                                            @for(idioma of obtenerIdiomas(paisComparado); track idioma){
+                                                <span class="chip">{{idioma}}</span>
+                                            }
+                                        </div>
+                                    } @else {
+                                        Sin idiomas disponibles
+                                    }
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Zona horaria</dt>
+                                <dd>
+                                    @if(obtenerZonasHorarias(paisComparado).length > 0){
+                                        <div class="chip-list">
+                                            @for(zona of obtenerZonasHorarias(paisComparado); track zona){
+                                                <span class="chip">{{zona}}</span>
+                                            }
+                                        </div>
+                                    } @else {
+                                        Sin zona horaria
+                                    }
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </article>
+            }
+        </section>
     }
 </section>
