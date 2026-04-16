@@ -76,13 +76,19 @@
                 Copiar enlace
             </button>
 
-            @if(estadoCopiaEnlace() === 'ok'){
-                <p class="copy-feedback" aria-live="polite">Enlace copiado al portapapeles</p>
-            }
-
-            @if(estadoCopiaEnlace() === 'error'){
-                <p class="copy-feedback copy-feedback--error" aria-live="polite">No se pudo copiar el enlace</p>
-            }
+            <p
+                class="copy-feedback"
+                [class.copy-feedback--visible]="estadoCopiaEnlace() !== 'idle'"
+                [class.copy-feedback--error]="estadoCopiaEnlace() === 'error'"
+                [attr.aria-live]="estadoCopiaEnlace() !== 'idle' ? 'polite' : 'off'">
+                {{
+                    estadoCopiaEnlace() === 'ok'
+                        ? 'Enlace copiado al portapapeles'
+                        : estadoCopiaEnlace() === 'error'
+                            ? 'No se pudo copiar el enlace'
+                            : ''
+                }}
+            </p>
         </div>
     </section>
 
