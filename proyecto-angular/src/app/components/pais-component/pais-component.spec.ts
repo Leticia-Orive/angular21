@@ -207,10 +207,12 @@ describe('PaisComponent', () => {
   });
 
   it('should close copy toast when Esc key is pressed', () => {
+    component.ayudaAtajosAbierta.set(true);
     component.estadoCopiaEnlace.set('error');
 
     component.cerrarToastConEsc();
 
+    expect(component.ayudaAtajosAbierta()).toBe(false);
     expect(component.estadoCopiaEnlace()).toBe('idle');
   });
 
@@ -273,5 +275,51 @@ describe('PaisComponent', () => {
 
     expect(preventDefault).not.toHaveBeenCalled();
     expect(component.soloFavoritos()).toBe(false);
+  });
+
+  it('should toggle shortcuts help panel with question mark shortcut', () => {
+    const preventDefault = vi.fn();
+
+    component.ayudaAtajosAbierta.set(false);
+    component.manejarAtajosTeclado({
+      key: '?',
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      target: document.body,
+      preventDefault,
+    } as unknown as KeyboardEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(component.ayudaAtajosAbierta()).toBe(true);
+
+    component.manejarAtajosTeclado({
+      key: '?',
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      target: document.body,
+      preventDefault,
+    } as unknown as KeyboardEvent);
+
+    expect(component.ayudaAtajosAbierta()).toBe(false);
+  });
+
+  it('should ignore question mark shortcut while typing in inputs', () => {
+    const input = fixture.nativeElement.querySelector('#buscador-paises') as HTMLInputElement;
+    const preventDefault = vi.fn();
+
+    component.ayudaAtajosAbierta.set(false);
+    component.manejarAtajosTeclado({
+      key: '?',
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      target: input,
+      preventDefault,
+    } as unknown as KeyboardEvent);
+
+    expect(preventDefault).not.toHaveBeenCalled();
+    expect(component.ayudaAtajosAbierta()).toBe(false);
   });
 });

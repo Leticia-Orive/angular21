@@ -37,8 +37,42 @@
             Filtra por nombre, región y criterio de ordenación para explorar los datos
             obtenidos desde la API.
         </p>
-        <p class="hero-hint">Atajos: / para buscar y F para alternar favoritos</p>
+        <div class="hero-shortcuts">
+            <p class="hero-hint">Atajos: / para buscar, F favoritos y ? para ayuda</p>
+            <button
+                class="shortcut-help-btn"
+                type="button"
+                [attr.aria-expanded]="ayudaAtajosAbierta()"
+                aria-controls="panel-atajos"
+                (click)="toggleAyudaAtajos()">
+                Ver atajos
+            </button>
+        </div>
     </header>
+
+    @if(ayudaAtajosAbierta()){
+        <div class="shortcut-overlay" (click)="cerrarAyudaAtajos()">
+            <section
+                id="panel-atajos"
+                class="shortcut-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="shortcut-title"
+                (click)="$event.stopPropagation()">
+                <h2 id="shortcut-title">Atajos de teclado</h2>
+                <ul>
+                    <li><span>/</span> Enfocar buscador</li>
+                    <li><span>F</span> Alternar solo favoritos</li>
+                    <li><span>?</span> Mostrar u ocultar esta ayuda</li>
+                    <li><span>Esc</span> Cerrar ayuda y notificaciones</li>
+                </ul>
+
+                <button class="secondary-btn shortcut-close-btn" type="button" (click)="cerrarAyudaAtajos()">
+                    Cerrar
+                </button>
+            </section>
+        </div>
+    }
 
     <section class="controls-panel">
         <div class="field-group field-group--wide">

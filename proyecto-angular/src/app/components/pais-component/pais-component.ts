@@ -61,6 +61,9 @@ export class PaisComponent implements OnDestroy {
   estadoCopiaEnlace = signal<'idle' | 'ok' | 'error'>('idle');
   private feedbackCopyTimeoutId?: number;
 
+  // Controla la visibilidad del panel con ayuda de atajos.
+  ayudaAtajosAbierta = signal<boolean>(false);
+
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
     const regiones = new Set(
@@ -241,6 +244,10 @@ export class PaisComponent implements OnDestroy {
 
   @HostListener('window:keydown.escape')
   cerrarToastConEsc(): void {
+    if (this.ayudaAtajosAbierta()) {
+      this.cerrarAyudaAtajos();
+    }
+
     if (this.estadoCopiaEnlace() !== 'idle') {
       this.cerrarToastCopia();
     }
@@ -262,10 +269,24 @@ export class PaisComponent implements OnDestroy {
       return;
     }
 
+    if (event.key === '?') {
+      event.preventDefault();
+      this.toggleAyudaAtajos();
+      return;
+    }
+
     if (event.key.toLowerCase() === 'f') {
       event.preventDefault();
       this.toggleSoloFavoritos();
     }
+  }
+
+  toggleAyudaAtajos(): void {
+    this.ayudaAtajosAbierta.set(!this.ayudaAtajosAbierta());
+  }
+
+  cerrarAyudaAtajos(): void {
+    this.ayudaAtajosAbierta.set(false);
   }
 
   // Obtiene los paises y actualiza el estado.
