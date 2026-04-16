@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';
 import { FavoritosService } from '../../services/favoritos.service';
@@ -19,7 +19,7 @@ import { Pais } from '../../models/pais-interface';
   templateUrl: './pais-component.html',
   styleUrl: './pais-component.css',
 })
-export class PaisComponent {
+export class PaisComponent implements OnDestroy {
   // Opciones de orden disponibles para el selector.
   readonly opcionesOrden = [
     { valor: 'nombre-asc', etiqueta: 'Nombre (A-Z)' },
@@ -59,6 +59,7 @@ export class PaisComponent {
 
   // Estado para informar si la URL se pudo copiar al portapapeles.
   estadoCopiaEnlace = signal<'idle' | 'ok' | 'error'>('idle');
+  private feedbackCopyTimeoutId?: number;
 
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
@@ -148,6 +149,10 @@ export class PaisComponent {
     this.cargarPaises();
   }
 
+  ngOnDestroy(): void {
+    this.limpiarTimeoutFeedback();
+  }
+
   // Actualiza el texto de busqueda cuando el usuario escribe en el input.
   actualizarBusqueda(valor: string): void {
     this.terminoBusqueda.set(valor);
@@ -207,6 +212,7 @@ export class PaisComponent {
   async copiarEnlaceBusqueda(): Promise<void> {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') {
       this.estadoCopiaEnlace.set('error');
+      this.programarResetFeedback();
       return;
     }
 
@@ -214,14 +220,17 @@ export class PaisComponent {
 
     if (!navigator.clipboard?.writeText) {
       this.estadoCopiaEnlace.set('error');
+      this.programarResetFeedback();
       return;
     }
 
     try {
       await navigator.clipboard.writeText(urlActual);
       this.estadoCopiaEnlace.set('ok');
+      this.programarResetFeedback();
     } catch {
       this.estadoCopiaEnlace.set('error');
+      this.programarResetFeedback();
     }
   }
 
@@ -259,6 +268,7 @@ export class PaisComponent {
 
   private actualizarQueryParams(): void {
     this.estadoCopiaEnlace.set('idle');
+    this.limpiarTimeoutFeedback();
 
     this.router.navigate([], {
       relativeTo: this.route,
@@ -278,5 +288,30 @@ export class PaisComponent {
     }
 
     return this.opcionesOrden.some((opcion) => opcion.valor === valor);
+  }
+
+  private programarResetFeedback(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.limpiarTimeoutFeedback();
+
+    this.feedbackCopyTimeoutId = window.setTimeout(() => {
+      this.estadoCopiaEnlace.set('idle');
+      this.feedbackCopyTimeoutId = undefined;
+    }, 2500);
+  }
+
+  private limpiarTimeoutFeedback(): void {
+    if (typeof window === 'undefined') {
+      this.feedbackCopyTimeoutId = undefined;
+      return;
+    }
+
+    if (this.feedbackCopyTimeoutId !== undefined) {
+      window.clearTimeout(this.feedbackCopyTimeoutId);
+      this.feedbackCopyTimeoutId = undefined;
+    }
   }
 }

@@ -158,6 +158,8 @@ describe('PaisComponent', () => {
   });
 
   it('should copy current url to clipboard', async () => {
+    vi.useFakeTimers();
+
     const writeTextMock = vi.fn().mockResolvedValue(undefined);
 
     Object.defineProperty(navigator, 'clipboard', {
@@ -171,9 +173,16 @@ describe('PaisComponent', () => {
 
     expect(writeTextMock).toHaveBeenCalledWith(window.location.href);
     expect(component.estadoCopiaEnlace()).toBe('ok');
+
+    vi.advanceTimersByTime(2500);
+    expect(component.estadoCopiaEnlace()).toBe('idle');
+
+    vi.useRealTimers();
   });
 
   it('should show error state when clipboard API is unavailable', async () => {
+    vi.useFakeTimers();
+
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
       value: undefined,
@@ -182,5 +191,10 @@ describe('PaisComponent', () => {
     await component.copiarEnlaceBusqueda();
 
     expect(component.estadoCopiaEnlace()).toBe('error');
+
+    vi.advanceTimersByTime(2500);
+    expect(component.estadoCopiaEnlace()).toBe('idle');
+
+    vi.useRealTimers();
   });
 });
