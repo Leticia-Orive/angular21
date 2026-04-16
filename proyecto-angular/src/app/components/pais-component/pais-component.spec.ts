@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 
 import { PaisComponent } from './pais-component';
 import { PaisesService } from '../../services/paises-service';
@@ -9,6 +9,7 @@ import { Pais } from '../../models/pais-interface';
 describe('PaisComponent', () => {
   let component: PaisComponent;
   let fixture: ComponentFixture<PaisComponent>;
+  let router: Router;
 
   const mockPaises: Pais[] = [
     {
@@ -49,8 +50,13 @@ describe('PaisComponent', () => {
 
     fixture = TestBed.createComponent(PaisComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
     await fixture.whenStable();
     fixture.detectChanges();
+  });
+
+  beforeEach(() => {
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
   it('should create', () => {
@@ -102,6 +108,44 @@ describe('PaisComponent', () => {
       poblacionTotal: 48000000,
       regionMasComun: 'Europe',
       paisMasPoblado: mockPaises[0],
+    });
+  });
+
+  it('should sync active filters to query params', () => {
+    component.actualizarBusqueda('spa');
+    component.actualizarRegion('Europe');
+    component.actualizarOrden('poblacion-desc');
+    component.toggleSoloFavoritos();
+
+    expect(router.navigate).toHaveBeenLastCalledWith([], {
+      relativeTo: expect.any(Object),
+      replaceUrl: true,
+      queryParams: {
+        q: 'spa',
+        region: 'Europe',
+        orden: 'poblacion-desc',
+        fav: '1',
+      },
+    });
+  });
+
+  it('should remove query params when filters are reset', () => {
+    component.actualizarBusqueda('spa');
+    component.actualizarRegion('Europe');
+    component.actualizarOrden('poblacion-desc');
+    component.toggleSoloFavoritos();
+
+    component.limpiarFiltros();
+
+    expect(router.navigate).toHaveBeenLastCalledWith([], {
+      relativeTo: expect.any(Object),
+      replaceUrl: true,
+      queryParams: {
+        q: null,
+        region: null,
+        orden: null,
+        fav: null,
+      },
     });
   });
 });

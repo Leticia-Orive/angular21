@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';
 import { FavoritosService } from '../../services/favoritos.service';
 import { Pais } from '../../models/pais-interface';
@@ -30,6 +30,8 @@ export class PaisComponent {
 
   // Inyeccion del servicio que realiza la llamada HTTP a la API de paises.
   private paisService = inject(PaisesService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   // Servicio para marcar y persistir paises favoritos en localStorage.
   readonly favoritosService = inject(FavoritosService);
@@ -133,22 +135,32 @@ export class PaisComponent {
 
   // Al crear el componente, dispara la primera carga de datos.
   constructor(){
+    this.route.queryParamMap.subscribe((params) => {
+      this.terminoBusqueda.set(params.get('q') ?? '');
+      this.regionSeleccionada.set(params.get('region') ?? 'Todas');
+      this.ordenSeleccionado.set(this.ordenEsValido(params.get('orden')) ? (params.get('orden') as string) : 'nombre-asc');
+      this.soloFavoritos.set(params.get('fav') === '1');
+    });
+
     this.cargarPaises();
   }
 
   // Actualiza el texto de busqueda cuando el usuario escribe en el input.
   actualizarBusqueda(valor: string): void {
     this.terminoBusqueda.set(valor);
+    this.actualizarQueryParams();
   }
 
   // Actualiza la region activa del filtro.
   actualizarRegion(valor: string): void {
     this.regionSeleccionada.set(valor);
+    this.actualizarQueryParams();
   }
 
   // Actualiza el criterio de orden activo.
   actualizarOrden(valor: string): void {
     this.ordenSeleccionado.set(valor);
+    this.actualizarQueryParams();
   }
 
   limpiarFiltros(): void {
@@ -156,11 +168,13 @@ export class PaisComponent {
     this.regionSeleccionada.set('Todas');
     this.ordenSeleccionado.set('nombre-asc');
     this.soloFavoritos.set(false);
+    this.actualizarQueryParams();
   }
 
   // Alterna entre mostrar todos los paises o solo favoritos.
   toggleSoloFavoritos(): void {
     this.soloFavoritos.set(!this.soloFavoritos());
+    this.actualizarQueryParams();
   }
 
   // Devuelve la primera capital o un texto alternativo si no existe.
@@ -217,5 +231,26 @@ export class PaisComponent {
     }, {});
 
     return Object.entries(conteo).sort((a, b) => b[1] - a[1])[0][0];
+  }
+
+  private actualizarQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      replaceUrl: true,
+      queryParams: {
+        q: this.terminoBusqueda().trim() || null,
+        region: this.regionSeleccionada() !== 'Todas' ? this.regionSeleccionada() : null,
+        orden: this.ordenSeleccionado() !== 'nombre-asc' ? this.ordenSeleccionado() : null,
+        fav: this.soloFavoritos() ? '1' : null,
+      },
+    });
+  }
+
+  private ordenEsValido(valor: string | null): boolean {
+    if (!valor) {
+      return false;
+    }
+
+    return this.opcionesOrden.some((opcion) => opcion.valor === valor);
   }
 }
