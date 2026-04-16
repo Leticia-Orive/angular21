@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute, provideRouter, RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { PaisDetalleComponent } from './pais-detalle-component';
 import { PaisesService } from '../../services/paises-service';
@@ -74,5 +75,12 @@ describe('PaisDetalleComponent', () => {
     expect(secondComponent.pais()).toBeNull();
     expect(secondComponent.error()).toBe('No se ha indicado un pais valido.');
     expect(secondComponent.cargando()).toBe(false);
+  });
+
+  it('should keep query params in back link to the list', () => {
+    const backLinkDebugElement = fixture.debugElement.query(By.css('.back-link'));
+    const backLinkDirective = backLinkDebugElement.injector.get(RouterLink);
+
+    expect(backLinkDirective.queryParamsHandling).toBe('preserve');
   });
 });

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, RouterLink } from '@angular/router';
 
 import { PaisComponent } from './pais-component';
 import { PaisesService } from '../../services/paises-service';
@@ -147,5 +148,12 @@ describe('PaisComponent', () => {
         fav: null,
       },
     });
+  });
+
+  it('should keep query params when navigating to detail', () => {
+    const detailLinkDebugElement = fixture.debugElement.query(By.css('.detail-link'));
+    const detailLinkDirective = detailLinkDebugElement.injector.get(RouterLink);
+
+    expect(detailLinkDirective.queryParamsHandling).toBe('preserve');
   });
 });
