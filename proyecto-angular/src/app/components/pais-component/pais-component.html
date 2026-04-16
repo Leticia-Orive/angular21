@@ -5,6 +5,13 @@
         [class.copy-feedback--visible]="estadoCopiaEnlace() !== 'idle'"
         [class.copy-feedback--error]="estadoCopiaEnlace() === 'error'"
         [attr.aria-live]="estadoCopiaEnlace() !== 'idle' ? 'polite' : 'off'">
+        <span
+            class="copy-feedback__icon"
+            [class.copy-feedback__icon--error]="estadoCopiaEnlace() === 'error'"
+            aria-hidden="true">
+            {{ estadoCopiaEnlace() === 'error' ? '!' : '✓' }}
+        </span>
+        <span class="copy-feedback__text">
         {{
             estadoCopiaEnlace() === 'ok'
                 ? 'Enlace copiado al portapapeles'
@@ -12,6 +19,7 @@
                     ? 'No se pudo copiar el enlace'
                     : ''
         }}
+        </span>
     </p>
 
     <header class="hero">
