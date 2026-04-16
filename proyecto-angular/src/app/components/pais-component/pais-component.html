@@ -201,7 +201,7 @@
 
         @if(paisesFiltrados().length > 0){
             <div class="grid">
-                @for(pais of paisesFiltrados(); track pais.name.common){
+                @for(pais of paisesPagina(); track pais.name.common){
                     <article class="card">
                         <div class="flag-frame">
                             @if(obtenerBandera(pais); as bandera){
@@ -243,6 +243,40 @@
                     </article>
                 }
             </div>
+
+            @if(totalPaginas() > 1){
+                <nav class="pagination" aria-label="Paginación de países">
+                    <button
+                        class="pagination__btn"
+                        type="button"
+                        [disabled]="paginaActual() === 1"
+                        (click)="paginaAnterior()"
+                        aria-label="Página anterior">
+                        ‹
+                    </button>
+
+                    @for(n of numeroPaginas(); track n){
+                        <button
+                            class="pagination__btn"
+                            [class.pagination__btn--active]="paginaActual() === n"
+                            type="button"
+                            (click)="irAPagina(n)"
+                            [attr.aria-current]="paginaActual() === n ? 'page' : null"
+                            [attr.aria-label]="'Página ' + n">
+                            {{n}}
+                        </button>
+                    }
+
+                    <button
+                        class="pagination__btn"
+                        type="button"
+                        [disabled]="paginaActual() === totalPaginas()"
+                        (click)="paginaSiguiente()"
+                        aria-label="Página siguiente">
+                        ›
+                    </button>
+                </nav>
+            }
         } @else {
             <div class="status-panel status-panel--empty">
                 <h2>Sin resultados</h2>

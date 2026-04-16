@@ -66,6 +66,10 @@ export class PaisComponent implements OnDestroy {
 
   private static readonly AYUDA_VISTA_KEY = 'paises-ayuda-atajos-vista';
 
+  // Paginacion.
+  static readonly TAMANIO_PAGINA = 20;
+  paginaActual = signal<number>(1);
+
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
     const regiones = new Set(
@@ -106,6 +110,22 @@ export class PaisComponent implements OnDestroy {
           return a.name.common.localeCompare(b.name.common);
       }
     });
+  });
+
+  // Array de numeros de pagina para iterar en el template.
+  numeroPaginas = computed(() =>
+    Array.from({ length: this.totalPaginas() }, (_, i) => i + 1)
+  );
+
+  // Numero total de paginas segun los filtros activos.
+  totalPaginas = computed(() =>
+    Math.max(1, Math.ceil(this.paisesFiltrados().length / PaisComponent.TAMANIO_PAGINA))
+  );
+
+  // Slice de la pagina actual.
+  paisesPagina = computed(() => {
+    const inicio = (this.paginaActual() - 1) * PaisComponent.TAMANIO_PAGINA;
+    return this.paisesFiltrados().slice(inicio, inicio + PaisComponent.TAMANIO_PAGINA);
   });
 
   // Cantidad total de paises marcados como favoritos.
@@ -182,7 +202,21 @@ export class PaisComponent implements OnDestroy {
     this.regionSeleccionada.set('Todas');
     this.ordenSeleccionado.set('nombre-asc');
     this.soloFavoritos.set(false);
+    this.paginaActual.set(1);
     this.actualizarQueryParams();
+  }
+
+  irAPagina(numero: number): void {
+    const pagina = Math.max(1, Math.min(numero, this.totalPaginas()));
+    this.paginaActual.set(pagina);
+  }
+
+  paginaAnterior(): void {
+    this.irAPagina(this.paginaActual() - 1);
+  }
+
+  paginaSiguiente(): void {
+    this.irAPagina(this.paginaActual() + 1);
   }
 
   // Alterna entre mostrar todos los paises o solo favoritos.
@@ -336,6 +370,7 @@ export class PaisComponent implements OnDestroy {
   private actualizarQueryParams(): void {
     this.estadoCopiaEnlace.set('idle');
     this.limpiarTimeoutFeedback();
+    this.paginaActual.set(1);
 
     this.router.navigate([], {
       relativeTo: this.route,

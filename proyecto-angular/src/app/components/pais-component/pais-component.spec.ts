@@ -323,6 +323,85 @@ describe('PaisComponent', () => {
     expect(component.ayudaAtajosAbierta()).toBe(false);
   });
 
+  it('should show first page of countries when there are more than page size', () => {
+    const TAMANIO = PaisComponent.TAMANIO_PAGINA;
+    const muchosPaises = Array.from({ length: TAMANIO + 5 }, (_, i) => ({
+      name: { common: `Pais${i}` },
+      region: 'Europe',
+      capital: [`Capital${i}`],
+      population: i * 1000,
+      flags: { png: `flag${i}.png`, svg: `flag${i}.svg` },
+    })) as Pais[];
+
+    component.paises.set(muchosPaises);
+
+    expect(component.paisesPagina().length).toBe(TAMANIO);
+    expect(component.totalPaginas()).toBe(2);
+    expect(component.paginaActual()).toBe(1);
+  });
+
+  it('should navigate to next page', () => {
+    const TAMANIO = PaisComponent.TAMANIO_PAGINA;
+    const muchosPaises = Array.from({ length: TAMANIO + 5 }, (_, i) => ({
+      name: { common: `Pais${i}` },
+      region: 'Europe',
+      capital: [`Capital${i}`],
+      population: i * 1000,
+      flags: { png: `flag${i}.png`, svg: `flag${i}.svg` },
+    })) as Pais[];
+
+    component.paises.set(muchosPaises);
+    component.paginaSiguiente();
+
+    expect(component.paginaActual()).toBe(2);
+    expect(component.paisesPagina().length).toBe(5);
+  });
+
+  it('should not go beyond last page', () => {
+    component.paises.set(mockPaises);
+
+    component.irAPagina(99);
+
+    expect(component.paginaActual()).toBe(component.totalPaginas());
+  });
+
+  it('should reset page to 1 when filters change', () => {
+    const TAMANIO = PaisComponent.TAMANIO_PAGINA;
+    const muchosPaises = Array.from({ length: TAMANIO + 5 }, (_, i) => ({
+      name: { common: `Pais${i}` },
+      region: 'Europe',
+      capital: [`Capital${i}`],
+      population: i * 1000,
+      flags: { png: `flag${i}.png`, svg: `flag${i}.svg` },
+    })) as Pais[];
+
+    component.paises.set(muchosPaises);
+    component.irAPagina(2);
+    expect(component.paginaActual()).toBe(2);
+
+    component.actualizarBusqueda('algo');
+
+    expect(component.paginaActual()).toBe(1);
+  });
+
+  it('should reset page to 1 when filters are cleared', () => {
+    const TAMANIO = PaisComponent.TAMANIO_PAGINA;
+    const muchosPaises = Array.from({ length: TAMANIO + 5 }, (_, i) => ({
+      name: { common: `Pais${i}` },
+      region: 'Europe',
+      capital: [`Capital${i}`],
+      population: i * 1000,
+      flags: { png: `flag${i}.png`, svg: `flag${i}.svg` },
+    })) as Pais[];
+
+    component.paises.set(muchosPaises);
+    component.irAPagina(2);
+
+    component.limpiarFiltros();
+
+    expect(component.paginaActual()).toBe(1);
+  });
+
   it('should mark help as seen when closed', () => {
     localStorage.removeItem('paises-ayuda-atajos-vista');
     component.ayudaAtajosAbierta.set(true);
