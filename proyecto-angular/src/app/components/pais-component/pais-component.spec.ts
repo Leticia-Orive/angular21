@@ -221,4 +221,57 @@ describe('PaisComponent', () => {
 
     expect(component.estadoCopiaEnlace()).toBe('idle');
   });
+
+  it('should focus search input when slash shortcut is used', () => {
+    const input = fixture.nativeElement.querySelector('#buscador-paises') as HTMLInputElement;
+    const focusSpy = vi.spyOn(input, 'focus');
+    const preventDefault = vi.fn();
+
+    component.manejarAtajosTeclado({
+      key: '/',
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      target: document.body,
+      preventDefault,
+    } as unknown as KeyboardEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(focusSpy).toHaveBeenCalled();
+  });
+
+  it('should toggle favorites with F shortcut when focus is outside editable elements', () => {
+    const preventDefault = vi.fn();
+    const estadoInicial = component.soloFavoritos();
+
+    component.manejarAtajosTeclado({
+      key: 'f',
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      target: document.body,
+      preventDefault,
+    } as unknown as KeyboardEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(component.soloFavoritos()).toBe(!estadoInicial);
+  });
+
+  it('should ignore F shortcut when typing in editable elements', () => {
+    const input = fixture.nativeElement.querySelector('#buscador-paises') as HTMLInputElement;
+    const preventDefault = vi.fn();
+
+    component.soloFavoritos.set(false);
+    component.manejarAtajosTeclado({
+      key: 'f',
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      target: input,
+      preventDefault,
+    } as unknown as KeyboardEvent);
+
+    expect(preventDefault).not.toHaveBeenCalled();
+    expect(component.soloFavoritos()).toBe(false);
+  });
 });

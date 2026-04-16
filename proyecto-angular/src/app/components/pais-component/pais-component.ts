@@ -246,6 +246,28 @@ export class PaisComponent implements OnDestroy {
     }
   }
 
+  @HostListener('window:keydown', ['$event'])
+  manejarAtajosTeclado(event: KeyboardEvent): void {
+    if (event.key === 'Escape' || event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+
+    if (this.esCampoEditable(event.target)) {
+      return;
+    }
+
+    if (event.key === '/') {
+      event.preventDefault();
+      this.enfocarBuscador();
+      return;
+    }
+
+    if (event.key.toLowerCase() === 'f') {
+      event.preventDefault();
+      this.toggleSoloFavoritos();
+    }
+  }
+
   // Obtiene los paises y actualiza el estado.
   cargarPaises(forceRefresh = false): void{
     this.cargando.set(true);
@@ -325,5 +347,23 @@ export class PaisComponent implements OnDestroy {
       window.clearTimeout(this.feedbackCopyTimeoutId);
       this.feedbackCopyTimeoutId = undefined;
     }
+  }
+
+  private enfocarBuscador(): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const input = document.getElementById('buscador-paises') as HTMLInputElement | null;
+    input?.focus();
+  }
+
+  private esCampoEditable(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    const tagName = target.tagName.toLowerCase();
+    return target.isContentEditable || tagName === 'input' || tagName === 'textarea' || tagName === 'select';
   }
 }
