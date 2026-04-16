@@ -133,10 +133,37 @@
 	display: inline-block;
 }
 
+.copy-feedback__close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	color: inherit;
+	font-size: 1rem;
+	line-height: 1;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.copy-feedback__close:hover {
+	background: rgba(20, 32, 51, 0.08);
+}
+
+.copy-feedback__close:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 1px;
+}
+
 .copy-feedback--visible {
 	max-height: 36px;
 	opacity: 1;
 	transform: translateY(0);
+	pointer-events: auto;
 }
 
 .copy-feedback--error {

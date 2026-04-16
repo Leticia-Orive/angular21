@@ -197,4 +197,12 @@ describe('PaisComponent', () => {
 
     vi.useRealTimers();
   });
+
+  it('should close copy toast manually', () => {
+    component.estadoCopiaEnlace.set('ok');
+
+    component.cerrarToastCopia();
+
+    expect(component.estadoCopiaEnlace()).toBe('idle');
+  });
 });

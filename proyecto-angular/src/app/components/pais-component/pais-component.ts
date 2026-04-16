@@ -234,6 +234,11 @@ export class PaisComponent implements OnDestroy {
     }
   }
 
+  cerrarToastCopia(): void {
+    this.estadoCopiaEnlace.set('idle');
+    this.limpiarTimeoutFeedback();
+  }
+
   // Obtiene los paises y actualiza el estado.
   cargarPaises(forceRefresh = false): void{
     this.cargando.set(true);

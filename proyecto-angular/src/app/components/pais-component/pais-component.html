@@ -20,6 +20,14 @@
                     : ''
         }}
         </span>
+        <button
+            type="button"
+            class="copy-feedback__close"
+            (click)="cerrarToastCopia()"
+            [attr.tabindex]="estadoCopiaEnlace() !== 'idle' ? 0 : -1"
+            [attr.aria-label]="'Cerrar notificación de copia'">
+            ×
+        </button>
     </p>
 
     <header class="hero">
