@@ -57,6 +57,9 @@ export class PaisComponent {
   // Indica si mostrar solo favoritos o todos los paises.
   soloFavoritos = signal<boolean>(false);
 
+  // Estado para informar si la URL se pudo copiar al portapapeles.
+  estadoCopiaEnlace = signal<'idle' | 'ok' | 'error'>('idle');
+
   // Regiones disponibles construidas dinamicamente a partir de los datos.
   regionesDisponibles = computed(() => {
     const regiones = new Set(
@@ -201,6 +204,27 @@ export class PaisComponent {
     this.cargarPaises(true);
   }
 
+  async copiarEnlaceBusqueda(): Promise<void> {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+      this.estadoCopiaEnlace.set('error');
+      return;
+    }
+
+    const urlActual = window.location.href;
+
+    if (!navigator.clipboard?.writeText) {
+      this.estadoCopiaEnlace.set('error');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(urlActual);
+      this.estadoCopiaEnlace.set('ok');
+    } catch {
+      this.estadoCopiaEnlace.set('error');
+    }
+  }
+
   // Obtiene los paises y actualiza el estado.
   cargarPaises(forceRefresh = false): void{
     this.cargando.set(true);
@@ -234,6 +258,8 @@ export class PaisComponent {
   }
 
   private actualizarQueryParams(): void {
+    this.estadoCopiaEnlace.set('idle');
+
     this.router.navigate([], {
       relativeTo: this.route,
       replaceUrl: true,

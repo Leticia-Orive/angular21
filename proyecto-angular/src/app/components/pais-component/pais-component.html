@@ -68,6 +68,21 @@
                 (click)="limpiarFiltros()">
                 Limpiar filtros
             </button>
+
+            <button
+                class="secondary-btn"
+                type="button"
+                (click)="copiarEnlaceBusqueda()">
+                Copiar enlace
+            </button>
+
+            @if(estadoCopiaEnlace() === 'ok'){
+                <p class="copy-feedback" aria-live="polite">Enlace copiado al portapapeles</p>
+            }
+
+            @if(estadoCopiaEnlace() === 'error'){
+                <p class="copy-feedback copy-feedback--error" aria-live="polite">No se pudo copiar el enlace</p>
+            }
         </div>
     </section>
 

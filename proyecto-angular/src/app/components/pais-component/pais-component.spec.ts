@@ -156,4 +156,31 @@ describe('PaisComponent', () => {
 
     expect(detailLinkDirective.queryParamsHandling).toBe('preserve');
   });
+
+  it('should copy current url to clipboard', async () => {
+    const writeTextMock = vi.fn().mockResolvedValue(undefined);
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: writeTextMock,
+      },
+    });
+
+    await component.copiarEnlaceBusqueda();
+
+    expect(writeTextMock).toHaveBeenCalledWith(window.location.href);
+    expect(component.estadoCopiaEnlace()).toBe('ok');
+  });
+
+  it('should show error state when clipboard API is unavailable', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: undefined,
+    });
+
+    await component.copiarEnlaceBusqueda();
+
+    expect(component.estadoCopiaEnlace()).toBe('error');
+  });
 });

@@ -72,6 +72,22 @@
 	justify-content: flex-end;
 }
 
+.field-group--actions .secondary-btn {
+	width: 100%;
+}
+
+.copy-feedback {
+	margin: 2px 0 0;
+	font-size: 0.82rem;
+	font-weight: 700;
+	color: var(--accent);
+	line-height: 1.4;
+}
+
+.copy-feedback--error {
+	color: var(--danger);
+}
+
 .field-group label {
 	font-size: 0.88rem;
 	font-weight: 700;
