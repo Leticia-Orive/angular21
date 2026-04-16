@@ -21,7 +21,7 @@ describe('PaisDetalleComponent', () => {
   ];
 
   const paisesServiceMock = {
-    obtenerPaises: vi.fn(() => of(mockPaises)),
+    obtenerPaisPorNombre: vi.fn((nombre: string) => of(mockPaises.find((pais) => pais.name.common === nombre))),
   };
 
   beforeEach(async () => {
@@ -59,6 +59,7 @@ describe('PaisDetalleComponent', () => {
     expect(component.pais()?.name.common).toBe('Spain');
     expect(component.error()).toBeNull();
     expect(component.cargando()).toBe(false);
+    expect(paisesServiceMock.obtenerPaisPorNombre).toHaveBeenCalledWith('Spain');
   });
 
   it('should set an error when the route param is missing', async () => {

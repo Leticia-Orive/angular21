@@ -78,4 +78,30 @@ describe('PaisComponent', () => {
       'Argentina',
     ]);
   });
+
+  it('should clear active filters and restore defaults', () => {
+    component.actualizarBusqueda('ja');
+    component.actualizarRegion('Asia');
+    component.actualizarOrden('poblacion-desc');
+    component.toggleSoloFavoritos();
+
+    component.limpiarFiltros();
+
+    expect(component.terminoBusqueda()).toBe('');
+    expect(component.regionSeleccionada()).toBe('Todas');
+    expect(component.ordenSeleccionado()).toBe('nombre-asc');
+    expect(component.soloFavoritos()).toBe(false);
+  });
+
+  it('should compute summary data from visible countries', () => {
+    component.actualizarRegion('Europe');
+
+    expect(component.resumenResultados()).toEqual({
+      totalPaises: 3,
+      visibles: 1,
+      poblacionTotal: 48000000,
+      regionMasComun: 'Europe',
+      paisMasPoblado: mockPaises[0],
+    });
+  });
 });

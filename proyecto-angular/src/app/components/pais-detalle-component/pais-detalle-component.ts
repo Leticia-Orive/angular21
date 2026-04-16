@@ -94,10 +94,8 @@ export class PaisDetalleComponent {
       return;
     }
 
-    this.paisService.obtenerPaises().subscribe({
-      next: (data) => {
-        const paisEncontrado = data.find((pais) => pais.name.common.toLowerCase() === nombre.toLowerCase());
-
+    this.paisService.obtenerPaisPorNombre(nombre).subscribe({
+      next: (paisEncontrado) => {
         if (!paisEncontrado) {
           this.error.set('No se encontro el pais solicitado.');
           this.cargando.set(false);

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { Pais } from '../models/pais-interface';
 
 /**
@@ -39,7 +39,11 @@ export class PaisesService {
   /**
    * Realiza la peticion GET una sola vez y reutiliza el resultado en siguientes llamadas.
    */
-  obtenerPaises(): Observable<Pais[]>{
+  obtenerPaises(forceRefresh = false): Observable<Pais[]>{
+    if (forceRefresh) {
+      this.paisesCache$ = undefined;
+    }
+
     if (!this.paisesCache$) {
       this.paisesCache$ = this.http.get<Pais[]>(this.apiUrl).pipe(
         shareReplay(1)
@@ -47,5 +51,15 @@ export class PaisesService {
     }
 
     return this.paisesCache$;
+  }
+
+  obtenerPaisPorNombre(nombre: string): Observable<Pais | undefined> {
+    const nombreNormalizado = nombre.trim().toLowerCase();
+
+    return this.obtenerPaises().pipe(
+      map((paises) => {
+        return paises.find((pais) => pais.name.common.toLowerCase() === nombreNormalizado);
+      })
+    );
   }
 }

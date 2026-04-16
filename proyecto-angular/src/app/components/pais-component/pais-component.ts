@@ -100,6 +100,37 @@ export class PaisComponent {
   // Cantidad total de paises marcados como favoritos.
   totalFavoritos = computed(() => this.favoritosService.lista().length);
 
+  // Permite conocer rapidamente si el usuario tiene filtros activos.
+  hayFiltrosActivos = computed(() => {
+    return !!this.terminoBusqueda().trim() ||
+      this.regionSeleccionada() !== 'Todas' ||
+      this.ordenSeleccionado() !== 'nombre-asc' ||
+      this.soloFavoritos();
+  });
+
+  // Resumen visible para dar contexto rapido sobre los resultados actuales.
+  resumenResultados = computed(() => {
+    const visibles = this.paisesFiltrados();
+    const totalPaises = this.paises().length;
+    const poblacionTotal = visibles.reduce((total, pais) => total + pais.population, 0);
+    const regionMasComun = this.calcularRegionMasComun(visibles);
+    const paisMasPoblado = visibles.reduce<Pais | null>((actual, pais) => {
+      if (!actual || pais.population > actual.population) {
+        return pais;
+      }
+
+      return actual;
+    }, null);
+
+    return {
+      totalPaises,
+      visibles: visibles.length,
+      poblacionTotal,
+      regionMasComun,
+      paisMasPoblado,
+    };
+  });
+
   // Al crear el componente, dispara la primera carga de datos.
   constructor(){
     this.cargarPaises();
@@ -118,6 +149,13 @@ export class PaisComponent {
   // Actualiza el criterio de orden activo.
   actualizarOrden(valor: string): void {
     this.ordenSeleccionado.set(valor);
+  }
+
+  limpiarFiltros(): void {
+    this.terminoBusqueda.set('');
+    this.regionSeleccionada.set('Todas');
+    this.ordenSeleccionado.set('nombre-asc');
+    this.soloFavoritos.set(false);
   }
 
   // Alterna entre mostrar todos los paises o solo favoritos.
@@ -145,9 +183,16 @@ export class PaisComponent {
     return pais.flags?.png || pais.flags?.svg || null;
   }
 
+  reintentarCarga(): void {
+    this.cargarPaises(true);
+  }
+
   // Obtiene los paises y actualiza el estado.
-  cargarPaises(): void{
-    this.paisService.obtenerPaises().subscribe({
+  cargarPaises(forceRefresh = false): void{
+    this.cargando.set(true);
+    this.error.set(null);
+
+    this.paisService.obtenerPaises(forceRefresh).subscribe({
       next: (data)=>{
         this.paises.set(data);
         this.cargando.set(false);
@@ -158,5 +203,19 @@ export class PaisComponent {
         this.cargando.set(false);
       }
     });
+  }
+
+  private calcularRegionMasComun(paises: Pais[]): string {
+    if (!paises.length) {
+      return 'Sin datos';
+    }
+
+    const conteo = paises.reduce<Record<string, number>>((acc, pais) => {
+      const region = this.obtenerRegion(pais);
+      acc[region] = (acc[region] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    return Object.entries(conteo).sort((a, b) => b[1] - a[1])[0][0];
   }
 }

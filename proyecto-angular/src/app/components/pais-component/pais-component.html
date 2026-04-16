@@ -58,6 +58,17 @@
                 }
             </button>
         </div>
+
+        <div class="field-group field-group--actions">
+            <label>Acciones</label>
+            <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!hayFiltrosActivos()"
+                (click)="limpiarFiltros()">
+                Limpiar filtros
+            </button>
+        </div>
     </section>
 
     @if(cargando()){
@@ -72,12 +83,45 @@
 
     @if(error()){
         <div class="status-panel status-panel--error">
-            <h2>No se pudo cargar la información</h2>
-            <p>{{error()}}</p>
+            <div>
+                <h2>No se pudo cargar la información</h2>
+                <p>{{error()}}</p>
+            </div>
+            <button class="secondary-btn secondary-btn--error" type="button" (click)="reintentarCarga()">
+                Reintentar
+            </button>
         </div>
     }
 
     @if(!cargando() && !error()){
+        <section class="summary-grid">
+            <article class="summary-card">
+                <span class="summary-label">Países visibles</span>
+                <strong>{{resumenResultados().visibles}}</strong>
+                <p>de un total de {{resumenResultados().totalPaises}} disponibles</p>
+            </article>
+
+            <article class="summary-card">
+                <span class="summary-label">Población acumulada</span>
+                <strong>{{formatearPoblacion(resumenResultados().poblacionTotal)}}</strong>
+                <p>considerando solo los resultados actuales</p>
+            </article>
+
+            <article class="summary-card">
+                <span class="summary-label">Región dominante</span>
+                <strong>{{resumenResultados().regionMasComun}}</strong>
+                <p>la región con más coincidencias en pantalla</p>
+            </article>
+
+            <article class="summary-card">
+                <span class="summary-label">País más poblado</span>
+                <strong>{{resumenResultados().paisMasPoblado?.name?.common || 'Sin datos'}}</strong>
+                <p>
+                    {{resumenResultados().paisMasPoblado ? formatearPoblacion(resumenResultados().paisMasPoblado!.population) + ' habitantes' : 'Sin coincidencias'}}
+                </p>
+            </article>
+        </section>
+
         <section class="results-header">
             <p class="results-count results-count--favorites">Favoritos: {{totalFavoritos()}}</p>
             <p class="results-count">Resultados: {{paisesFiltrados().length}}</p>

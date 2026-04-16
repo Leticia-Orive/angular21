@@ -76,4 +76,35 @@ describe('PaisesService', () => {
     expect(primerResultado).toEqual(mockPaises);
     expect(segundoResultado).toEqual(mockPaises);
   });
+
+  it('should find a country by name using the cached list', () => {
+    let resultado: Pais | undefined;
+
+    service.obtenerPaisPorNombre('spain').subscribe((data) => {
+      resultado = data;
+    });
+
+    const req = httpMock.expectOne(
+      'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags'
+    );
+    req.flush(mockPaises);
+
+    expect(resultado?.name.common).toBe('Spain');
+  });
+
+  it('should request the API again when forceRefresh is true', () => {
+    service.obtenerPaises().subscribe();
+
+    const firstReq = httpMock.expectOne(
+      'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags'
+    );
+    firstReq.flush(mockPaises);
+
+    service.obtenerPaises(true).subscribe();
+
+    const secondReq = httpMock.expectOne(
+      'https://restcountries.com/v3.1/all?fields=name,region,subregion,capital,population,area,timezones,languages,currencies,flags'
+    );
+    secondReq.flush(mockPaises);
+  });
 });

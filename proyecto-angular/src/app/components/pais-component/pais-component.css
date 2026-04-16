@@ -51,7 +51,7 @@
 
 .controls-panel {
 	display: grid;
-	grid-template-columns: 2fr 1fr 1fr;
+	grid-template-columns: 2fr 1fr 1fr 1fr;
 	gap: 16px;
 	padding: 18px;
 	margin-bottom: 22px;
@@ -66,6 +66,10 @@
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+}
+
+.field-group--actions {
+	justify-content: flex-end;
 }
 
 .field-group label {
@@ -98,6 +102,7 @@
 .status-panel {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	gap: 16px;
 	padding: 22px;
 	border-radius: 20px;
@@ -153,6 +158,43 @@
 	align-items: center;
 	justify-content: flex-end;
 	margin-bottom: 14px;
+}
+
+.summary-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 16px;
+	margin-bottom: 18px;
+}
+
+.summary-card {
+	padding: 18px;
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.86);
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	box-shadow: 0 18px 45px rgba(20, 32, 51, 0.08);
+}
+
+.summary-label {
+	display: block;
+	margin-bottom: 10px;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.summary-card strong {
+	display: block;
+	font-size: 1.65rem;
+	line-height: 1.1;
+}
+
+.summary-card p {
+	margin: 10px 0 0;
+	color: var(--muted);
+	line-height: 1.5;
 }
 
 .results-count {
@@ -362,6 +404,39 @@
 	opacity: 0.92;
 }
 
+.secondary-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 46px;
+	padding: 12px 14px;
+	border: 1px solid var(--line);
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.92);
+	color: var(--text);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+	transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.secondary-btn:hover:not(:disabled) {
+	border-color: var(--accent);
+	background: var(--accent-soft);
+	transform: translateY(-1px);
+}
+
+.secondary-btn:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.secondary-btn--error {
+	border-color: rgba(180, 35, 24, 0.18);
+	color: var(--danger);
+	background: rgba(255, 255, 255, 0.8);
+}
+
 @keyframes spin {
 	to {
 		transform: rotate(360deg);
@@ -389,6 +464,7 @@
 
 	.status-panel {
 		align-items: flex-start;
+		flex-direction: column;
 	}
 
 	.grid {
