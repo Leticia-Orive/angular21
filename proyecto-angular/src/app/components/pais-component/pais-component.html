@@ -1,5 +1,19 @@
 
 <section class="page-shell">
+    <p
+        class="copy-feedback copy-feedback--toast"
+        [class.copy-feedback--visible]="estadoCopiaEnlace() !== 'idle'"
+        [class.copy-feedback--error]="estadoCopiaEnlace() === 'error'"
+        [attr.aria-live]="estadoCopiaEnlace() !== 'idle' ? 'polite' : 'off'">
+        {{
+            estadoCopiaEnlace() === 'ok'
+                ? 'Enlace copiado al portapapeles'
+                : estadoCopiaEnlace() === 'error'
+                    ? 'No se pudo copiar el enlace'
+                    : ''
+        }}
+    </p>
+
     <header class="hero">
         <p class="eyebrow">Explorador de países</p>
         <h1>Consulta países de forma rápida</h1>
@@ -75,20 +89,6 @@
                 (click)="copiarEnlaceBusqueda()">
                 Copiar enlace
             </button>
-
-            <p
-                class="copy-feedback"
-                [class.copy-feedback--visible]="estadoCopiaEnlace() !== 'idle'"
-                [class.copy-feedback--error]="estadoCopiaEnlace() === 'error'"
-                [attr.aria-live]="estadoCopiaEnlace() !== 'idle' ? 'polite' : 'off'">
-                {{
-                    estadoCopiaEnlace() === 'ok'
-                        ? 'Enlace copiado al portapapeles'
-                        : estadoCopiaEnlace() === 'error'
-                            ? 'No se pudo copiar el enlace'
-                            : ''
-                }}
-            </p>
         </div>
     </section>
 

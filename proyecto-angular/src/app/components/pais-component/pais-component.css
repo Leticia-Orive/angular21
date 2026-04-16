@@ -89,6 +89,23 @@
 	transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.2s ease;
 }
 
+.copy-feedback--toast {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	margin: 0;
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: #e9faf6;
+	border: 1px solid rgba(15, 118, 110, 0.2);
+	box-shadow: 0 12px 30px rgba(20, 32, 51, 0.2);
+	color: var(--accent);
+	z-index: 50;
+	pointer-events: none;
+	max-width: min(360px, calc(100vw - 24px));
+	transform: translateY(8px);
+}
+
 .copy-feedback--visible {
 	max-height: 36px;
 	opacity: 1;
@@ -97,6 +114,8 @@
 
 .copy-feedback--error {
 	color: var(--danger);
+	background: #feeceb;
+	border-color: rgba(180, 35, 24, 0.2);
 }
 
 .field-group label {
@@ -483,6 +502,11 @@
 @media (max-width: 640px) {
 	:host {
 		padding: 20px 12px 32px;
+	}
+
+	.copy-feedback--toast {
+		right: 12px;
+		bottom: 12px;
 	}
 
 	.hero h1 {
