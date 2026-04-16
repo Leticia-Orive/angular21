@@ -205,4 +205,20 @@ describe('PaisComponent', () => {
 
     expect(component.estadoCopiaEnlace()).toBe('idle');
   });
+
+  it('should close copy toast when Esc key is pressed', () => {
+    component.estadoCopiaEnlace.set('error');
+
+    component.cerrarToastConEsc();
+
+    expect(component.estadoCopiaEnlace()).toBe('idle');
+  });
+
+  it('should not close copy toast when Esc pressed and toast is idle', () => {
+    component.estadoCopiaEnlace.set('idle');
+
+    component.cerrarToastConEsc();
+
+    expect(component.estadoCopiaEnlace()).toBe('idle');
+  });
 });

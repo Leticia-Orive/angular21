@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';
 import { FavoritosService } from '../../services/favoritos.service';
@@ -237,6 +237,13 @@ export class PaisComponent implements OnDestroy {
   cerrarToastCopia(): void {
     this.estadoCopiaEnlace.set('idle');
     this.limpiarTimeoutFeedback();
+  }
+
+  @HostListener('window:keydown.escape')
+  cerrarToastConEsc(): void {
+    if (this.estadoCopiaEnlace() !== 'idle') {
+      this.cerrarToastCopia();
+    }
   }
 
   // Obtiene los paises y actualiza el estado.
