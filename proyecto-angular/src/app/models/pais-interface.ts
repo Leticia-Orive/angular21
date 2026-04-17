@@ -1,4 +1,8 @@
 /**
+ * Interfaz del dominio Pais.
+ * Sirve para tipar la informacion de paises consumida desde la API.
+ */
+/**
  * Modelo de datos para representar un pais en la aplicacion.
  *
  * Para que sirve:

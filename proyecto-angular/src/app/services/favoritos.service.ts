@@ -1,3 +1,7 @@
+/**
+ * Servicio de favoritos.
+ * Sirve para agregar/quitar paises favoritos y persistirlos en localStorage.
+ */
 import { Injectable, signal, computed } from '@angular/core';
 
 const STORAGE_KEY = 'paises-favoritos';

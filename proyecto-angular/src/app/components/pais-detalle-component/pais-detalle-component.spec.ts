@@ -1,3 +1,7 @@
+/**
+ * Pruebas del componente de detalle de pais.
+ * Sirven para validar carga por ruta, comparacion y sincronizacion de query params.
+ */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink, convertToParamMap, provideRouter } from '@angular/router';

@@ -1,3 +1,7 @@
+/**
+ * Componente de listado de paises.
+ * Sirve para cargar, filtrar, ordenar y paginar paises, incluyendo gestion de favoritos.
+ */
 import { Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';

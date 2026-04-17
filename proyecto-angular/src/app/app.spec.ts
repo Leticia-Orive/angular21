@@ -1,3 +1,7 @@
+/**
+ * Pruebas unitarias del componente raiz.
+ * Sirven para validar que la app principal se crea correctamente.
+ */
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';

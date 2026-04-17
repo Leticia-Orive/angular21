@@ -1,3 +1,7 @@
+/**
+ * Componente raiz de la aplicacion.
+ * Sirve como punto de entrada visual y delega la navegacion al enrutador.
+ */
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 

@@ -1,3 +1,7 @@
+/*
+ * Estilos del componente de listado de paises.
+ * Sirven para maquetar el dashboard, filtros, tarjetas y estados visuales.
+ */
 :host {
 	--bg-soft: linear-gradient(180deg, #f7f4ed 0%, #eef4f8 100%);
 	--panel: rgba(255, 255, 255, 0.82);

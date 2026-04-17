@@ -1,3 +1,7 @@
+/*
+ * Estilos del componente de detalle de pais.
+ * Sirven para estructura de ficha, toolbar de comparacion y estados de carga/error.
+ */
 :host {
   --bg-soft: linear-gradient(180deg, #f7f4ed 0%, #eef4f8 100%);
   --panel: rgba(255, 255, 255, 0.88);

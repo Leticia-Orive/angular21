@@ -1,3 +1,7 @@
+/**
+ * Componente de detalle y comparacion de paises.
+ * Sirve para mostrar datos ampliados de un pais y compararlo con otro.
+ */
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';

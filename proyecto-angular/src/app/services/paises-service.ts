@@ -1,3 +1,7 @@
+/**
+ * Servicio de acceso a paises.
+ * Sirve para obtener el catalogo desde la API y resolver busquedas por nombre.
+ */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';

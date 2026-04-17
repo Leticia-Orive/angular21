@@ -1,3 +1,7 @@
+/*
+ * Estilos globales de la aplicacion.
+ * Sirven para definir apariencia base compartida por todos los componentes.
+ */
 /* You can add global styles to this file, and also import other style files */
 body{
     font-family: Arial, Helvetica, sans-serif;

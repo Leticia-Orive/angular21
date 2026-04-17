@@ -1,3 +1,7 @@
+/**
+ * Pruebas del servicio de paises.
+ * Sirven para validar peticiones HTTP, cache y refresco forzado.
+ */
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';

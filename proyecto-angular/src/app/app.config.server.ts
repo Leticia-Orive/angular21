@@ -1,3 +1,7 @@
+/**
+ * Configuracion especifica de servidor.
+ * Sirve para combinar la configuracion general con providers de SSR.
+ */
 import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { appConfig } from './app.config';

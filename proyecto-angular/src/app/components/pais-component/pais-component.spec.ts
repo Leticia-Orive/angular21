@@ -1,3 +1,7 @@
+/**
+ * Pruebas del componente de listado de paises.
+ * Sirven para validar filtros, orden, query params, atajos y acciones de UI.
+ */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';

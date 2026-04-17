@@ -1,3 +1,7 @@
+/**
+ * Servidor Express para SSR.
+ * Sirve para exponer archivos estaticos y renderizar rutas Angular en el servidor.
+ */
 import {
   AngularNodeAppEngine,
   createNodeRequestHandler,

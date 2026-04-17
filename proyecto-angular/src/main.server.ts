@@ -1,3 +1,7 @@
+/**
+ * Entrada de renderizado en servidor (SSR).
+ * Sirve para bootstrapear la app Angular cuando se ejecuta en entorno server.
+ */
 import { BootstrapContext, bootstrapApplication } from '@angular/platform-browser';
 import { App } from './app/app';
 import { config } from './app/app.config.server';
