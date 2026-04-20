@@ -141,6 +141,22 @@
                 (click)="copiarEnlaceBusqueda()">
                 Copiar enlace
             </button>
+
+            <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="totalFavoritos() === 0"
+                (click)="exportarFavoritosCSV()">
+                Exportar favoritos CSV
+            </button>
+
+            <button
+                class="secondary-btn secondary-btn--danger"
+                type="button"
+                [disabled]="totalFavoritos() === 0"
+                (click)="favoritosService.limpiarTodos()">
+                Limpiar favoritos
+            </button>
         </div>
     </section>
 
@@ -226,6 +242,10 @@
                                 <div>
                                     <dt>Población</dt>
                                     <dd>{{formatearPoblacion(pais.population)}}</dd>
+                                </div>
+                                <div>
+                                    <dt>Área</dt>
+                                    <dd>{{formatearArea(pais.area)}}</dd>
                                 </div>
                             </dl>
 

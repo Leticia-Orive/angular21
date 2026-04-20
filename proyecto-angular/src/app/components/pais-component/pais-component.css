@@ -636,6 +636,18 @@
 	background: rgba(255, 255, 255, 0.8);
 }
 
+.secondary-btn--danger {
+	border-color: rgba(180, 35, 24, 0.18);
+	color: var(--danger);
+	background: rgba(255, 255, 255, 0.8);
+}
+
+.secondary-btn--danger:hover:not(:disabled) {
+	border-color: var(--danger);
+	background: var(--danger-soft);
+	transform: translateY(-1px);
+}
+
 @keyframes spin {
 	to {
 		transform: rotate(360deg);

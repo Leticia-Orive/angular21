@@ -2,7 +2,8 @@
  * Componente de listado de paises.
  * Sirve para cargar, filtrar, ordenar y paginar paises, incluyendo gestion de favoritos.
  */
-import { Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, effect, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaisesService } from '../../services/paises-service';
 import { FavoritosService } from '../../services/favoritos.service';
@@ -30,6 +31,8 @@ export class PaisComponent implements OnDestroy {
     { valor: 'nombre-desc', etiqueta: 'Nombre (Z-A)' },
     { valor: 'poblacion-asc', etiqueta: 'Poblacion (menor a mayor)' },
     { valor: 'poblacion-desc', etiqueta: 'Poblacion (mayor a menor)' },
+    { valor: 'area-asc', etiqueta: 'Área (menor a mayor)' },
+    { valor: 'area-desc', etiqueta: 'Área (mayor a menor)' },
   ] as const;
 
   // Inyeccion del servicio que realiza la llamada HTTP a la API de paises.
@@ -39,6 +42,8 @@ export class PaisComponent implements OnDestroy {
 
   // Servicio para marcar y persistir paises favoritos en localStorage.
   readonly favoritosService = inject(FavoritosService);
+
+  private titleService = inject(Title);
 
   // Estado reactivo con la lista de paises recibidos.
   paises = signal<Pais[]>([]);
@@ -109,6 +114,10 @@ export class PaisComponent implements OnDestroy {
           return a.population - b.population;
         case 'poblacion-desc':
           return b.population - a.population;
+        case 'area-asc':
+          return (a.area ?? 0) - (b.area ?? 0);
+        case 'area-desc':
+          return (b.area ?? 0) - (a.area ?? 0);
         case 'nombre-asc':
         default:
           return a.name.common.localeCompare(b.name.common);
@@ -177,6 +186,11 @@ export class PaisComponent implements OnDestroy {
 
     this.cargarPaises();
     this.mostrarAyudaPrimeraVezSiProcede();
+
+    effect(() => {
+      const n = this.paisesFiltrados().length;
+      this.titleService.setTitle(`Países (${n}) — Explorador`);
+    });
   }
 
   ngOnDestroy(): void {
@@ -242,6 +256,40 @@ export class PaisComponent implements OnDestroy {
   // Formatea la poblacion con separadores para mejorar la lectura.
   formatearPoblacion(poblacion: number): string {
     return poblacion.toLocaleString('es-ES');
+  }
+
+  // Formatea el area con separadores y unidad o devuelve texto alternativo.
+  formatearArea(area?: number): string {
+    if (!area) return 'Sin datos';
+    return `${area.toLocaleString('es-ES')} km²`;
+  }
+
+  // Genera y descarga un CSV con los paises marcados como favoritos.
+  exportarFavoritosCSV(): void {
+    const favoritos = this.favoritosService.lista();
+    if (!favoritos.length) return;
+
+    const paisesData = this.paises().filter((p) => favoritos.includes(p.name.common));
+    const cabecera = ['Nombre', 'Región', 'Subregión', 'Capital', 'Población', 'Área (km²)'].join(',');
+    const filas = paisesData.map((p) =>
+      [
+        `"${p.name.common}"`,
+        `"${p.region ?? ''}"`,
+        `"${p.subregion ?? ''}"`,
+        `"${this.obtenerCapital(p)}"`,
+        p.population,
+        p.area ?? '',
+      ].join(',')
+    );
+
+    const csv = [cabecera, ...filas].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'favoritos.csv';
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   // Obtiene una URL de bandera utilizable o null cuando no existe imagen.

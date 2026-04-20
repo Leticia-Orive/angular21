@@ -43,6 +43,12 @@ export class FavoritosService {
     this.guardarEnStorage(nuevos);
   }
 
+  // Elimina todos los favoritos y limpia el almacenamiento.
+  limpiarTodos(): void {
+    this.favoritos.set([]);
+    this.guardarEnStorage([]);
+  }
+
   private cargarDeStorage(): string[] {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
